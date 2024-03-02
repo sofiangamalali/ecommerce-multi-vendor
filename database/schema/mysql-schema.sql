@@ -228,7 +228,7 @@ CREATE TABLE `users` (
   `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `phone_number` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `birth_date` date DEFAULT NULL,
+  `birth_date` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `address` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -279,3 +279,4 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (29,'2024_03_01_192
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (30,'2024_03_01_192951_create_orders_table',1);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (31,'2024_03_01_193014_create_plans_table',1);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (32,'2024_03_01_193036_create_transactions_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (33,'2024_03_02_204543_change_date_type_users',2);
