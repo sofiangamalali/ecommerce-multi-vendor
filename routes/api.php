@@ -25,19 +25,23 @@ Route::group(["prefix" => "admin"], function () {
     Route::post("register", [AdminController::class, "registerAdmin"]);
     // write admin routes
 });
-Route::group(["prefix" => "vendor"], function () {
+// Route::group(["prefix" => "vendor"], function () {
+Route::controller(VendorController::class)
+    ->prefix("vendor")
+    ->group(function () {
+        // Route::post("login", [VendorController::class, "loginVendor"]);
+        // Route::post("register", [VendorController::class, "registerVendor"]);
+        Route::post("login", "loginVendor");
+        Route::post("register", "registerVendor");
 
-    Route::post("login", [VendorController::class, "loginVendor"]);
-    Route::post("register", [VendorController::class, "registerVendor"]);
-});
+        // Product Routes
+        Route::get("products", "getProducts");
+        Route::get("products/{id}", "getSingleProduct");
+        Route::patch("products/{id}", "updateProduct");
+        Route::post("products", "createProduct");
+        Route::delete("/products/{id}", "deleteProduct");
+    });
 
-// products routes
-Route::controller(ProductController::class)->group(function () {
-    Route::get("products", "getProducts");
-    Route::get("products/{id}", "getSingleProduct");
-    Route::patch("products/{id}", "updateProduct");
-    Route::post("products", "createProduct");
-    Route::delete("/products/{id}", "deleteProduct");
-});
+
 
 
