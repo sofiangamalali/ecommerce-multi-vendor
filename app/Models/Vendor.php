@@ -11,7 +11,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Auth\Authenticatable as AuthenticatableTrait;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class Vendor extends Model implements Authenticatable
+class Vendor extends Model implements Authenticatable, JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable, AuthenticatableTrait;
 

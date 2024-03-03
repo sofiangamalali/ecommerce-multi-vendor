@@ -52,6 +52,7 @@ class ProductController extends Controller
     {
         $vendor = auth("vendor")->user();
         $product = $vendor->products()->find($id);
+        // dd($product->price);
         // Check if the product exists
         if (!$product) {
             // Product not found, handle the error (return a response, redirect, etc.)
@@ -61,7 +62,7 @@ class ProductController extends Controller
         // Update the product attributes based on the request data
         $product->update([
             'product_name' => $request->input('product_name'),
-            'price' => $request->input('price'),
+            'price' => $request->input('price') ? $request->input('price') : $product->price,
 
         ]);
 
