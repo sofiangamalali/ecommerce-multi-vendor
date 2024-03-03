@@ -63,7 +63,9 @@ class ProductController extends Controller
         $product->update([
             'product_name' => $request->input('product_name'),
             'price' => $request->input('price') ? $request->input('price') : $product->price,
-
+            'discount' => $request->input('discount') ?? $product->discount,
+            'stock' => $request->input('stock') ?? $product->stock,
+            'is_on_sale' => $request->input('is_on_sale') ?? $product->is_on_sale,
         ]);
 
         // Return a response indicating the update was successful
