@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\api\UserController;
 use App\Http\Controllers\api\AdminController;
+use App\Http\Controllers\api\VendorController;
 use App\Http\Controllers\api\JwtController;
 
 use GuzzleHttp\Middleware;
@@ -14,8 +15,6 @@ Route::group(["prefix" => "user"], function () {
     Route::post("login", [UserController::class, "loginUser"]);
     Route::post("register", [UserController::class, "registerUser"]);
     // write users routes
-
-
 });
 Route::group(["prefix" => "admin"], function () {
 
@@ -24,6 +23,6 @@ Route::group(["prefix" => "admin"], function () {
     // write admin routes
 });
 Route::group(["prefix" => "vendor"], function () {
-
-    // write vendor routes
+    Route::post("login", [VendorController::class, "loginVendor"]);
+    Route::post("register", [VendorController::class, "registerVendor"]);
 });
