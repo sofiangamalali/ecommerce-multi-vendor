@@ -90,6 +90,9 @@ class ProductController extends Controller
         $product = $vendor->products()->create($validatedData);
 
         // Return a response indicating the success of the creation
-        return response()->json(['message' => 'Product created successfully', 'product' => $product], 201);
+        return response()->json([
+            'message' => 'Product created successfully',
+            'product' => $product
+        ], 201);
     }
 }

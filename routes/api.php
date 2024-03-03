@@ -38,3 +38,5 @@ Route::controller(ProductController::class)->group(function () {
     Route::patch("products/{id}", "updateProduct");
     Route::post("products/", "createProduct");
 });
+
+
