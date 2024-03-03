@@ -95,4 +95,25 @@ class ProductController extends Controller
             'product' => $product
         ], 201);
     }
+    public function deleteProduct($id)
+    {
+        // Get the authenticated vendor
+        $vendor = auth("vendor")->user();
+
+        // Find the product with the given ID owned by the vendor
+        $product = $vendor->products()->find($id);
+
+        // Check if the product exists
+        if (!$product) {
+            // Product not found, handle the error (return a response, redirect, etc.)
+            return response()->json(['error' => 'Product not found'], 404);
+        }
+
+        // Delete the product
+        $product->delete();
+
+        // Return a response indicating the success of the deletion
+        return response()->json(['message' => 'Product deleted successfully']);
+    }
 }
+

@@ -36,7 +36,8 @@ Route::controller(ProductController::class)->group(function () {
     Route::get("products", "getProducts");
     Route::get("products/{id}", "getSingleProduct");
     Route::patch("products/{id}", "updateProduct");
-    Route::post("products/", "createProduct");
+    Route::post("products", "createProduct");
+    Route::delete("/products/{id}", "deleteProduct");
 });
 
 
