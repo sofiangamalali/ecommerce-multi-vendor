@@ -16,6 +16,12 @@ Route::group(["prefix" => "user"], function () {
     Route::post("login", [UserController::class, "loginUser"]);
     Route::post("register", [UserController::class, "registerUser"]);
     // write users routes
+    // card routes
+    Route::get("card/{id}", [UserController::class, "getCard"]);
+    Route::get("card", [UserController::class, "getAllCards"]);
+    Route::post("addCard", [UserController::class, "addCard"]);
+    Route::delete("removeCard/{id}", [UserController::class, "removeCard"]);
+    Route::patch("updateCard/{id}", [UserController::class, "updateCard"]);
 
 
 });

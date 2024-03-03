@@ -12,9 +12,14 @@ class card extends Model
     protected $fillable = [
         "user_id",
         "card_number",
-        "holder_name"
+        "holder_name",
+        "expired_date",
     ];
 
+
+    protected $casts = [
+        "expired_date" => "datetime"
+    ];
 
     public function user()
     {

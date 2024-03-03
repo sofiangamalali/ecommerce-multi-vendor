@@ -150,4 +150,13 @@ class VendorController extends Controller
         // Return a response indicating the success of the deletion
         return response()->json(['message' => 'Product deleted successfully']);
     }
+
+    public function getPlan()
+    {
+        // Get the authenticated vendor
+        $vendor = auth("vendor")->user();
+
+        $plan = $vendor->plan;
+        return $plan;
+    }
 }
