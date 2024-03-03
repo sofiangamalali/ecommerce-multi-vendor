@@ -30,7 +30,7 @@ class UserController extends Controller
             $user = auth('user')->user();
             $userToken = $user->createToken('AuthToken')->accessToken;
 
-            return response()->json(['token' => $token,  'user' => $user], 200);
+            return response()->json(['token' => $token, 'user' => $user], 200);
         }
         return response()->json(['error' => 'Invalid credentials'], 401);
 
@@ -59,6 +59,8 @@ class UserController extends Controller
             'address' => $request->input('address'),
         ]);
 
+        $user->cart()->create();
+
 
         return response()->json(['message' => "success", 'user' => $user], 200);
 
@@ -66,5 +68,5 @@ class UserController extends Controller
 
     }
 
-  
+
 }

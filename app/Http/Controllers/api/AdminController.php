@@ -12,8 +12,8 @@ class AdminController extends Controller
 
     public function __construct()
     {
-        
-        $this->middleware('auth:admin', ['except' => ['loginAdmin' ,'registerAdmin']]);
+
+        $this->middleware('auth:admin', ['except' => ['loginAdmin', 'registerAdmin']]);
 
     }
     public function loginAdmin(Request $request)
@@ -31,8 +31,8 @@ class AdminController extends Controller
             $user = auth('admin')->user();
             $userToken = $user->createToken('AuthToken')->accessToken;
 
-            return response()->json(['token' => $token,  'user' => $user], 200);
-          
+            return response()->json(['token' => $token, 'user' => $user], 200);
+
         }
         return response()->json(['error' => 'Invalid credentials'], 401);
 
@@ -53,7 +53,7 @@ class AdminController extends Controller
             'lname' => $request->input('lname'),
             'email' => $request->input('email'),
             'password' => \Hash::make($request->input('password')),
-           
+
         ]);
 
 
