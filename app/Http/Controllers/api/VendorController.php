@@ -101,6 +101,7 @@ class VendorController extends Controller
             'discount' => $request->input('discount') ?? $product->discount,
             'stock' => $request->input('stock') ?? $product->stock,
             'is_on_sale' => $request->input('is_on_sale') ?? $product->is_on_sale,
+            'cart_id' => $request->input('cart_id') ?? $product->cart_id
         ]);
 
         // Return a response indicating the update was successful
@@ -116,6 +117,7 @@ class VendorController extends Controller
             'discount' => 'numeric|nullable',
             'stock' => 'required|integer',
             'is_on_sale' => 'required|boolean',
+            'cart_id' => 'required|integer'
         ]);
 
         // Get the authenticated vendor

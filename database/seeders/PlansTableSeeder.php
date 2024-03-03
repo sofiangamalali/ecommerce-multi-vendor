@@ -19,14 +19,12 @@ class PlansTableSeeder extends Seeder
                 'name' => 'Basic Plan',
                 'n_of_products' => 50,
                 'trans_fee' => 2.50,
-                'vendor_id' => 1,
             ],
             [
                 'price' => 49.99,
                 'name' => 'Standard Plan',
                 'n_of_products' => 100,
                 'trans_fee' => 1.50,
-                'vendor_id' => 1,
             ],
         ];
 
