@@ -22,6 +22,7 @@ class ProductResource extends JsonResource
             "discount" => $this->discount,
             "stock" => $this->stock,
             "isOnSale" => $this->is_on_sale,
+            'quantity' => $this->pivot->quantity
         ];
     }
 }

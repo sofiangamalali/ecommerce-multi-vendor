@@ -24,14 +24,38 @@ class CartController extends Controller
     }
 
 
+    public function store(Request $request)
+    {
+        $cart = Cart::where("user_id", $request->user()->id)->first();
+        $totalPrice = 0;
+        foreach ($request->products as $product) {
+            $cart->products()->syncWithoutDetaching([$product['productId'] => ['quantity' => $product['quantity']]]);
+            $dbProduct = Product::find($product['productId']);
+            $totalPrice += $dbProduct->price * $product['quantity'];
+        }
+        $cart->update([
+            'total_price' => $totalPrice
+        ]);
 
+        return response()->json([
+            'message' => 'Cart created successfully',
+            'status' => 200,
+            'data' => new CartResource($cart)
+        ]);
+        ;
+    }
 
     /**
      * Display the specified resource.
      */
     public function show(Cart $cart)
     {
-        //
+        if (auth()->user()->getTable() == 'admins') {
+            return new CartResource($cart);
+        } else
+            return [
+                "message" => "Unauthorized user"
+            ];
     }
 
     /**
@@ -41,31 +65,57 @@ class CartController extends Controller
     {
         $cart = Cart::where("user_id", $request->user()->id)->first();
         $totalPrice = 0;
-        foreach ($request->products as $product) {
 
-            $cart->products()->syncWithoutDetaching([$product['productId'] => ['quantity' => $product['quantity']]]);
-            $dbProduct = Product::find($product['productId']);
-            $totalPrice += $dbProduct->price * $product['quantity'];
+        foreach ($request->products as $productId) {
+            $cartItem = $cart->products()->where('product_id', $productId)->first();
+
+            if ($request->operation == 'add') {
+                $newQuantity = $cartItem->pivot->quantity + 1;
+            } elseif ($request->operation == 'subtract') {
+                $newQuantity = max($cartItem->pivot->quantity - 1, 1);
+            }
+
+            $cart->products()->updateExistingPivot($productId, ['quantity' => $newQuantity]);
+            $dbProduct = Product::find($productId['productId']);
+            $totalPrice += $dbProduct->price * $newQuantity;
+
         }
-        $cart->update([
-            'total_price' => $totalPrice
-        ]);
+        $cart->update(['total_price' => $totalPrice]);
+        return response()->json(['message' => 'Cart updated successfully', 'data' => new CartResource($cart)]);
 
-        return response()->json(['message' => 'Cart updated successfully', 'status' => 200]);
-        ;
     }
-
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(Request $request, Cart $cart)
     {
-        if (strpos($request->url(), '/admin/') == true) {
+        if (auth()->user()->getTable() == 'admins') {
             $cart->delete();
             $res = [
                 "message" => "Deleted Successfully"
             ];
             return response()->json($res);
+        } elseif (auth()->user()->getTable() == 'users') {
+            $userCart = Cart::where("user_id", $request->user()->id)->first();
+            $removedPrice = 0;
+            $totalPrice = $userCart->total_price;
+
+            foreach ($request->products as $productId) {
+                $dbProduct = Product::find($productId['productId']);
+
+                $cartItem = $userCart->products()->where('product_id', $productId)->first();
+                if ($cartItem) {
+                    $removedPrice = $dbProduct->price * $cartItem->pivot->quantity;
+                }
+                $userCart->products()->detach($productId);
+
+                $totalPrice -= $removedPrice;
+
+            }
+            $cart->update(['total_price' => $totalPrice]);
+
+            return response()->json(['message' => 'Item removed successfully', 'data' => new CartResource($cart)]);
+
         }
     }
 }
