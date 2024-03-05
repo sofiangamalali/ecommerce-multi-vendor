@@ -7,6 +7,7 @@ use App\Models\Plan;
 use Illuminate\Http\Request;
 use Validator;
 use App\Models\Admin;
+use App\Models\Product;
 
 class AdminController extends Controller
 {
@@ -15,6 +16,11 @@ class AdminController extends Controller
     {
 
         $this->middleware('auth:admin', ['except' => ['loginAdmin', 'registerAdmin']]);
+
+
+ 
+
+
 
     }
     public function loginAdmin(Request $request)
@@ -33,6 +39,11 @@ class AdminController extends Controller
             $userToken = $user->createToken('AuthToken')->accessToken;
 
             return response()->json(['token' => $token, 'user' => $user], 200);
+
+
+
+
+
 
         }
         return response()->json(['error' => 'Invalid credentials'], 401);

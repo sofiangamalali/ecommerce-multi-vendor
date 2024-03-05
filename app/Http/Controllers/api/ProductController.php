@@ -8,16 +8,10 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    /**
-     * Create a new AuthController instance.
-     *
-     * @return void
-     */
+
     public function __construct()
     {
-        # By default we are using here auth:api middleware
         $this->middleware('auth:vendor');
-
     }
 
 
@@ -52,10 +46,9 @@ class ProductController extends Controller
     {
         $vendor = auth("vendor")->user();
         $product = $vendor->products()->find($id);
-        // dd($product->price);
-        // Check if the product exists
+
         if (!$product) {
-            // Product not found, handle the error (return a response, redirect, etc.)
+
             return response()->json(['error' => 'Product not found'], 404);
         }
 

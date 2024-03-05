@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Auth\Authenticatable;
@@ -14,7 +14,8 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 class Vendor extends Model implements Authenticatable, JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable, AuthenticatableTrait;
-
+    protected $table = 'vendors';
+    protected $guarded = ["id"];
     protected $fillable = [
         'fname',
         'lname',
@@ -50,8 +51,12 @@ class Vendor extends Model implements Authenticatable, JWTSubject
         return $this->hasMany(Product::class, "vendor_id", "id");
     }
 
-    public function plans()
+    public function plan()
     {
         return $this->hasOne(Plan::class, "vendor_id", "id");
+    }
+    public function promoCodes()
+    {
+        return $this->hasMany(PromoCode::class);
     }
 }

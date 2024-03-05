@@ -41,7 +41,7 @@ DROP TABLE IF EXISTS `cart`;
 CREATE TABLE `cart` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` bigint(20) unsigned NOT NULL,
-  `total_price` decimal(10,2) NOT NULL,
+  `total_price` decimal(10,2) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -73,18 +73,6 @@ CREATE TABLE `categories` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-DROP TABLE IF EXISTS `categories_products`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `categories_products` (
-  `product_id` bigint(20) unsigned NOT NULL,
-  `cat_id` bigint(20) unsigned NOT NULL,
-  PRIMARY KEY (`product_id`,`cat_id`),
-  KEY `categories_products_cat_id_foreign` (`cat_id`),
-  CONSTRAINT `categories_products_cat_id_foreign` FOREIGN KEY (`cat_id`) REFERENCES `categories` (`id`),
-  CONSTRAINT `categories_products_product_id_foreign` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `migrations`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -101,16 +89,16 @@ DROP TABLE IF EXISTS `orders`;
 CREATE TABLE `orders` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `status` varchar(255) NOT NULL DEFAULT 'hunger',
-  `u_address` bigint(20) unsigned NOT NULL,
   `cart_id` bigint(20) unsigned NOT NULL,
   `payment_method` varchar(255) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
+  `user_id` bigint(20) unsigned NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `orders_u_address_foreign` (`u_address`),
   KEY `orders_cart_id_foreign` (`cart_id`),
+  KEY `orders_user_id_foreign` (`user_id`),
   CONSTRAINT `orders_cart_id_foreign` FOREIGN KEY (`cart_id`) REFERENCES `cart` (`id`),
-  CONSTRAINT `orders_u_address_foreign` FOREIGN KEY (`u_address`) REFERENCES `users` (`id`)
+  CONSTRAINT `orders_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `personal_access_tokens`;
@@ -143,10 +131,7 @@ CREATE TABLE `plans` (
   `trans_fee` decimal(5,2) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `vendor_id` bigint(20) unsigned NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `plans_vendor_id_foreign` (`vendor_id`),
-  CONSTRAINT `plans_vendor_id_foreign` FOREIGN KEY (`vendor_id`) REFERENCES `vendors` (`id`) ON DELETE CASCADE
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `product_images`;
@@ -172,8 +157,11 @@ CREATE TABLE `products` (
   `is_on_sale` tinyint(1) NOT NULL DEFAULT 0,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
+  `category_id` bigint(20) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `products_vendor_id_foreign` (`vendor_id`),
+  KEY `products_category_id_foreign` (`category_id`),
+  CONSTRAINT `products_category_id_foreign` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE,
   CONSTRAINT `products_vendor_id_foreign` FOREIGN KEY (`vendor_id`) REFERENCES `vendors` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -248,15 +236,20 @@ CREATE TABLE `vendors` (
   `lname` varchar(255) NOT NULL,
   `business_name` varchar(255) DEFAULT NULL,
   `email` varchar(255) NOT NULL,
+  `phone_number` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `id_photo_front` blob DEFAULT NULL,
-  `id_photo_back` blob DEFAULT NULL,
-  `logo_pic` blob DEFAULT NULL,
+  `id_photo_front` varchar(255) DEFAULT NULL,
+  `id_photo_back` varchar(255) DEFAULT NULL,
+  `logo_pic` varchar(255) DEFAULT NULL,
   `is_active` tinyint(1) NOT NULL DEFAULT 0,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
+  `plan_id` bigint(20) unsigned NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `vendors_email_unique` (`email`)
+  UNIQUE KEY `vendors_email_unique` (`email`),
+  UNIQUE KEY `vendors_phone_number_unique` (`phone_number`),
+  KEY `vendors_plan_id_foreign` (`plan_id`),
+  CONSTRAINT `vendors_plan_id_foreign` FOREIGN KEY (`plan_id`) REFERENCES `plans` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -283,4 +276,12 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (30,'2024_03_01_192
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (31,'2024_03_01_193014_create_plans_table',1);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (32,'2024_03_01_193036_create_transactions_table',1);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (33,'2024_03_02_204543_change_date_type_users',2);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (34,'2024_03_03_024952_add_forign_key_to_plan_table',3);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (34,'2024_03_03_012348_total_price_nullable',3);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (35,'2024_03_03_142400_remove_categories_products_table',3);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (36,'2024_03_03_142754_add_category_id_to_products_table',3);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (37,'2024_03_03_023820_add_phone_vendor_table',4);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (38,'2024_03_03_035712_change_blob_to_varchar_vendors_table',4);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (39,'2024_03_03_115026_add_forign_key_to_vendor_table',5);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (40,'2024_03_05_034936_remove_userAddress_from_orders_table',6);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (41,'2024_03_05_035232_add_foreign_key_to_orders_table',6);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (42,'2024_03_05_040526_add_foreign_key_to_vendors_table',7);

@@ -33,5 +33,17 @@ class Product extends Model
     {
         return $this->belongsTo(Vendor::class);
     }
-}
+    public function cart()
+    {
+        return $this->belongsToMany(Cart::class, 'cart_items')->withPivot('quantity');
+    }
 
+    public function categories()
+    {
+        return $this->belongsTo(Category::class);
+    }
+    public function rating()
+    {
+        return $this->hasMany(Rating::class);
+    }
+}
