@@ -23,4 +23,15 @@ class Product extends Model
         'stock',
         'is_on_sale'
     ];
+
+    public function images()
+    {
+        return $this->hasMany(Product_image::class);
+    }
+
+    public function vendor()
+    {
+        return $this->belongsTo(Vendor::class);
+    }
 }
+

@@ -143,7 +143,10 @@ CREATE TABLE `plans` (
   `trans_fee` decimal(5,2) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `vendor_id` bigint(20) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `plans_vendor_id_foreign` (`vendor_id`),
+  CONSTRAINT `plans_vendor_id_foreign` FOREIGN KEY (`vendor_id`) REFERENCES `vendors` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `product_images`;
@@ -284,3 +287,4 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (32,'2024_03_01_193
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (33,'2024_03_02_204543_change_date_type_users',2);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (36,'2024_03_03_023820_add_phone_vendor_table',3);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (38,'2024_03_03_035712_change_blob_to_varchar_vendors_table',4);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (34,'2024_03_03_024952_add_forign_key_to_plan_table',3);

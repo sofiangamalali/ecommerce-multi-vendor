@@ -15,7 +15,7 @@ class ProductsTableSeeder extends Seeder
     {
         $products = [
             [
-                'vendor_id' => 1,
+                'vendor_id' => 26,
                 'product_name' => 'Sample Product 1',
                 'price' => 50.00,
                 'discount' => 5.00,
@@ -23,7 +23,7 @@ class ProductsTableSeeder extends Seeder
                 'is_on_sale' => 1,
             ],
             [
-                'vendor_id' => 1,
+                'vendor_id' => 26,
                 'product_name' => 'Sample Product 2',
                 'price' => 75.00,
                 'discount' => 10.00,
