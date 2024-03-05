@@ -4,20 +4,20 @@ namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Validator;
-use App\Models\Admin;
-use App\Models\Product;
+use App\Models\User;
 
-class AdminController extends Controller
+class AuthController extends Controller
 {
 
     public function __construct()
     {
-
-        $this->middleware('auth:admin', ['except' => ['loginAdmin', 'registerAdmin']]);
+        # By default we are using here auth:api middleware
+        $this->middleware('auth:user', ['except' => ['login', 'register']]);
 
     }
-    public function loginAdmin(Request $request)
+    public function loginUser(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'email' => 'required | email',
@@ -27,46 +27,46 @@ class AdminController extends Controller
             return response()->json(['errors' => $validator->errors()], 400);
         }
         // try to login and if not valid user return false
-        $token = auth('admin')->attempt($request->only('email', 'password'));
+        $token = auth('user')->attempt($request->only('email', 'password'));
         if ($token) {
-            $user = auth('admin')->user();
+            $user = auth('user')->user();
             $userToken = $user->createToken('AuthToken')->accessToken;
-
-            return response()->json(['token' => $token, 'user' => $user], 200);
-
+            return response()->json(['token' => $userToken], 200);
         }
         return response()->json(['error' => 'Invalid credentials'], 401);
 
     }
-    public function registerAdmin(Request $request)
+    public function registerUser(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'fname' => 'required |min:3 |string',
             'lname' => 'required |min:3 |string',
-            'email' => 'required |email | unique:admins,email',
+            'email' => 'required |email | unique:users,email',
             'password' => 'required | min:8',
+            'phone_number' => 'required | number | max:11 |min:11',
+            'birth_date' => 'required | date',
+            'address' => 'required'
         ]);
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 400);
         }
-        $user = Admin::create([
+        $user = User::create([
             'fname' => $request->input('fname'),
             'lname' => $request->input('lname'),
             'email' => $request->input('email'),
             'password' => \Hash::make($request->input('password')),
-
+            'phone_number' => $request->input('phone_number'),
+            'birth_date' => $request->input('birth_date'),
+            'address' => $request->input('address'),
         ]);
 
-
-        return response()->json(['message' => "success", 'user' => $user], 200);
+        $token = auth('user')->attempt(['email' => $user->email, 'password' => $user->password]);
+        $user = auth('user')->user();
+        $userToken = $user->createToken('AuthToken')->accessToken;
+        return response()->json(['user' => $user, 'token' => $userToken], 200);
 
 
 
     }
-    public function getProducts()
-    {
-        $products = Product::get();
 
-        
-    }
 }

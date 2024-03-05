@@ -245,15 +245,17 @@ CREATE TABLE `vendors` (
   `lname` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `business_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `phone_number` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `id_photo_front` blob,
-  `id_photo_back` blob,
-  `logo_pic` blob,
+  `id_photo_front` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `id_photo_back` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `logo_pic` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `is_active` tinyint(1) NOT NULL DEFAULT '0',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `vendors_email_unique` (`email`)
+  UNIQUE KEY `vendors_email_unique` (`email`),
+  UNIQUE KEY `vendors_phone_number_unique` (`phone_number`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -280,3 +282,5 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (30,'2024_03_01_192
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (31,'2024_03_01_193014_create_plans_table',1);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (32,'2024_03_01_193036_create_transactions_table',1);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (33,'2024_03_02_204543_change_date_type_users',2);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (36,'2024_03_03_023820_add_phone_vendor_table',3);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (38,'2024_03_03_035712_change_blob_to_varchar_vendors_table',4);
