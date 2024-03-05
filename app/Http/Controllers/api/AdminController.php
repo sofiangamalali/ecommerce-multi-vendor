@@ -17,7 +17,10 @@ class AdminController extends Controller
 
         $this->middleware('auth:admin', ['except' => ['loginAdmin', 'registerAdmin']]);
 
-        $this->middleware('auth:admin', ['except' => ['loginAdmin', 'registerAdmin']]);
+
+ 
+
+
 
     }
     public function loginAdmin(Request $request)
@@ -36,6 +39,9 @@ class AdminController extends Controller
             $userToken = $user->createToken('AuthToken')->accessToken;
 
             return response()->json(['token' => $token, 'user' => $user], 200);
+
+
+
 
 
 
@@ -59,7 +65,7 @@ class AdminController extends Controller
             'lname' => $request->input('lname'),
             'email' => $request->input('email'),
             'password' => \Hash::make($request->input('password')),
-           
+
         ]);
 
 
