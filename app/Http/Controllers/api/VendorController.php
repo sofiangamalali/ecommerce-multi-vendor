@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Product;
 use App\Models\Vendor;
 use Illuminate\Http\Request;
 
@@ -55,6 +56,8 @@ class VendorController extends Controller
 
         return response()->json(['message' => "success", 'user' => $user], 200);
     }
+
+    ///////// products
 
     public function getProducts()
     {
@@ -117,15 +120,18 @@ class VendorController extends Controller
             'discount' => 'numeric|nullable',
             'stock' => 'required|integer',
             'is_on_sale' => 'required|boolean',
-            'cart_id' => 'required|integer'
+            'cart_id' => 'required|integer',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         // Get the authenticated vendor
         $vendor = auth("vendor")->user();
 
+        $imagePath = $request->file('image')->store('images');
         // Create a new product for the vendor
         $product = $vendor->products()->create($validatedData);
-
+        $product->image_path = $imagePath;
+        $product->save();
         // Return a response indicating the success of the creation
         return response()->json([
             'message' => 'Product created successfully',
@@ -157,8 +163,38 @@ class VendorController extends Controller
     {
         // Get the authenticated vendor
         $vendor = auth("vendor")->user();
+        return $vendor->plan;
+    }
 
-        $plan = $vendor->plan;
-        return $plan;
+
+    ///////// images
+    public function getImages()
+    {
+        $vendor = auth("vendor")->user();
+
+        return $vendor->images;
+    }
+
+    public function storeImage(Request $request, $id)
+    {
+        // Validate the incoming request
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // adjust the validation rules as needed
+        ]);
+
+        // Store the image on the server
+        $imagePath = $request->file('image')->store('images');
+
+        // Save the image path in the database
+        // Assuming your model is named 'YourModel'
+        // $yourModel = YourModel::find($request->input('model_id'));
+        // $yourModel->image_path = $imagePath;
+        // $yourModel->save();
+        // $vendor = auth('vendor')->user();
+        $product = Product::find($id);
+        $product->image_path = $imagePath;
+        $product->save();
+
+        return response()->json(['message' => 'Image uploaded successfully']);
     }
 }
