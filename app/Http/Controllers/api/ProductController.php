@@ -27,12 +27,18 @@ class ProductController extends Controller
         $vendor = auth('vendor')->user();
 
         $products = $vendor->products;
-        // dd($products);
+
         if (!$products) {
             return response()->json(["message" => "Product not found"], 404);
         }
 
-        return response()->json(["products" => $products], 200);
+        $result = [];
+        foreach ($products as $product) {
+            $result[$product->id] = $product->images;
+            $result[$product->id] = $product;
+        }
+
+        return response()->json(["products" => $result], 200);
     }
 
 
@@ -124,8 +130,10 @@ class ProductController extends Controller
             'is_on_sale' => 'boolean',
             'cart_id' => 'required|integer',
             'category_id' => 'required|integer',
-            'image1' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-            'image2' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'image1' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'image2' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'image3' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'image4' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ]);
 
         // Get the authenticated vendor
