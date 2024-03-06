@@ -8,8 +8,18 @@ use Illuminate\Database\Eloquent\Model;
 class PromoCode extends Model
 {
     use HasFactory;
-    public function vendor()
-    {
-        return $this->belongsTo(Vendor::class);
-    }
+
+
+
+
+    protected $fillable = [
+        'code',
+        'percentage',
+    ];
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
+
+
 }
