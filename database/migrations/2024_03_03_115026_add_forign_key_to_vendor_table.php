@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -26,7 +25,7 @@ return new class extends Migration
     {
         Schema::table('vendors', function (Blueprint $table) {
             // Drop the foreign key constraint
-            $table->dropForeign(['plan_id']);
+            $table->dropForeign('plan_id');
 
             // Drop the vendor_id column
             $table->dropColumn('plan_id');

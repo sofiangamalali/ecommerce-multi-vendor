@@ -21,7 +21,9 @@ class Product extends Model
         'price',
         'discount',
         'stock',
-        'is_on_sale'
+        'is_on_sale',
+        'category_id',
+        'cart_id'
     ];
 
     public function images()

@@ -8,6 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'status',
+        'cart_id',
+        'payment_method',
+        'user_id',
+    ];
     public function cart()
     {
         return $this->belongsTo(Cart::class);
