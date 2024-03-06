@@ -3,6 +3,7 @@
 use App\Http\Controllers\api\CardController;
 use App\Http\Controllers\api\OrderController;
 use App\Http\Controllers\api\ProductController;
+use App\Http\Controllers\api\SearchController;
 use App\Http\Controllers\api\UserController;
 use App\Http\Controllers\api\AdminController;
 use App\Http\Controllers\api\JwtController;
@@ -67,6 +68,6 @@ Route::controller(ProductController::class)
         Route::delete("/products/{id}", "deleteProduct");
     });
 
-
+Route::get('/search', [SearchController::class, 'search']);
 Route::resource('/category', CategoryController::class);
 
