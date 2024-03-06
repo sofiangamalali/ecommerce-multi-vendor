@@ -48,7 +48,9 @@ class CategoryController extends Controller
      */
     public function update(Request $request, Category $category)
     {
-        $category->name = $request->name;
+        if ($request->name) {
+            $category->name = $request->name;
+        }
         $categoryId = $category->id;
         if ($request->hasFile('category_image')) {
             $imageNameWithExtension = $categoryId . '_' . 'category_image' . '.' . $request->file('category_image')->getClientOriginalExtension();
