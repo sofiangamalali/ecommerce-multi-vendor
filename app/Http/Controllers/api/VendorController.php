@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Product;
-use App\Models\Vendor;
+use App\Models\{Product, Vendor, PromoCode};
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Validator;
+use App\Mail\WelcomeMailForVendor;
 
 
 class VendorController extends Controller
@@ -47,9 +48,9 @@ class VendorController extends Controller
             'email' => 'required|email|unique:vendors,email',
             'phone_number' => 'required|unique:vendors,phone_number|max:11|min:11',
             'password' => 'required|min:8',
-            'id_photo_front' => 'file|image|mimes:jpeg,png,jpg,gif',
-            'id_photo_back' => 'file|image|mimes:jpeg,png,jpg,gif',
-            'logo_pic' => 'file|image|mimes:jpeg,png,jpg,gif',
+            'id_photo_front' => 'required| file|image|mimes:jpeg,png,jpg,gif',
+            'id_photo_back' => 'required |file|image|mimes:jpeg,png,jpg,gif',
+            'logo_pic' => 'required|file|image|mimes:jpeg,png,jpg,gif',
         ]);
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 400);
@@ -64,7 +65,7 @@ class VendorController extends Controller
         $vendor->phone_number = $request->input('phone_number');
         $vendor->password = \Hash::make($request->input('password'));
         $vendor->is_active = false;
-        $vendor->plan_id = 1;
+        $vendor->plan_id = $request->input('plan_id') ?? 1;
         $vendor->save();
 
         // get the vendor id to store the images with the id of its vendor .
@@ -89,6 +90,8 @@ class VendorController extends Controller
             $vendor->logo_pic = env('APP_URL') . ':8000' . '/vendor_images/' . $imageNameWithExtension;
         }
         $vendor->save();
+
+        Mail::to($vendor->email)->send(new WelcomeMailForVendor(['fname' => $vendor->fname, 'lname' => $vendor->lname]));
         return response()->json(['message' => 'Vendor registered successfully'], 201);
 
 

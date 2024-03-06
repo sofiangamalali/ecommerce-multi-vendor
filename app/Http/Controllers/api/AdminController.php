@@ -3,26 +3,25 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Plan;
+use App\Mail\{VendorActivationMail , VendorSuspendMail};
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Validator;
-use App\Models\Admin;
-use App\Models\Product;
+use App\Models\{Admin, Vendor , User ,Category ,Order , Transaction ,Product ,Plan ,PromoCode ,Rating};
+
 
 class AdminController extends Controller
 {
 
     public function __construct()
     {
-
         $this->middleware('auth:admin', ['except' => ['loginAdmin', 'registerAdmin']]);
 
-
- 
-
+     
 
 
     }
+
     public function loginAdmin(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -168,5 +167,53 @@ class AdminController extends Controller
         return response()->json(['message' => 'Plan removed successfully'], 200);
     }
 
-
+    public function activateVendor($id)
+    {
+        $vendor = Vendor::find($id);
+        if (!$vendor) {
+            return response()->json(['message' => 'Vendor does not exists'], 400);
+        }
+        if ($vendor->is_active == 1) {
+            return response()->json(['message' => 'Vendor is already activated'], 400);
+        }
+        $vendor->is_active = 1;
+        $vendor->save();
+        Mail::to($vendor->email)->send(new VendorActivationMail(['fname' => $vendor->fname, 'lname' => $vendor->lname]));
+        return response()->json(['message' => 'Vendor activated'], 200);
+    }
+    public function suspendVendor($id)
+    {
+        $vendor = Vendor::find($id);
+        if (!$vendor) {
+            return response()->json(['message' => 'Vendor does not exists'], 400);
+        }
+        if ($vendor->is_active == 0) {
+            return response()->json(['message' => 'Vendor is already suspended'], 400);
+        }
+        $vendor->is_active = 0;
+        $vendor->save();
+        Mail::to($vendor->email)->send(new VendorSuspendMail(['fname' => $vendor->fname, 'lname' => $vendor->lname]));
+        return response()->json(['message' => 'Vendor suspended'], 200);
+    }
+    public function getAllData(){
+        $vendorsCount = Vendor::count();
+        $usersCount = User::count();
+        $categoriesCount = Category::count();
+        $productsCount = Product::count();
+        $ordersCount = Order::count();
+        $plansCount = Plan::count();
+        $transcationsCount = Transaction::count();
+        $promoCodesCount = PromoCode::count();
+        return response()->json([
+            'numberOfVendors'=> $vendorsCount,
+            'numberOfUsers'=>  $usersCount,
+            'numberOfCategories'=> $categoriesCount,
+            'numberOfProducts'=> $productsCount,
+            'numberOfOrders'=> $ordersCount,
+            'numberOfPlans'=> $plansCount,
+            'numberOfTranscations'=> $transcationsCount,
+            'numberOfPromoCodes'=> $promoCodesCount,
+        ],200);
+    }
+    
 }

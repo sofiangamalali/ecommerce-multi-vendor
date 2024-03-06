@@ -140,8 +140,8 @@ DROP TABLE IF EXISTS `product_images`;
 CREATE TABLE `product_images` (
   `product_id` bigint(20) unsigned NOT NULL,
   `image` varchar(255) NOT NULL,
-  PRIMARY KEY (`product_id`),
-  CONSTRAINT `product_images_product_id_foreign` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`)
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `products`;
@@ -158,9 +158,12 @@ CREATE TABLE `products` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `category_id` bigint(20) unsigned NOT NULL,
+  `cart_id` bigint(20) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `products_vendor_id_foreign` (`vendor_id`),
   KEY `products_category_id_foreign` (`category_id`),
+  KEY `products_cart_id_foreign` (`cart_id`),
+  CONSTRAINT `products_cart_id_foreign` FOREIGN KEY (`cart_id`) REFERENCES `cart` (`id`) ON DELETE CASCADE,
   CONSTRAINT `products_category_id_foreign` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE,
   CONSTRAINT `products_vendor_id_foreign` FOREIGN KEY (`vendor_id`) REFERENCES `vendors` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -259,29 +262,33 @@ CREATE TABLE `vendors` (
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (17,'2019_12_14_000001_create_personal_access_tokens_table',1);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (18,'2024_03_01_191328_create_users_table',1);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (19,'2024_03_01_191954_create_cards_table',1);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (20,'2024_03_01_192022_create_vendors_table',1);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (21,'2024_03_01_192101_create_admins_table',1);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (22,'2024_03_01_192231_create_products_table',1);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (23,'2024_03_01_192257_create_product_images_table',1);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (24,'2024_03_01_192321_create_ratings_table',1);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (25,'2024_03_01_192346_create_cart_table',1);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (26,'2024_03_01_192409_create_cart_items_table',1);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (27,'2024_03_01_192828_create_promo_codes_table',1);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (28,'2024_03_01_192845_create_categories_table',1);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (29,'2024_03_01_192912_create_categories_products_table',1);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (30,'2024_03_01_192951_create_orders_table',1);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (31,'2024_03_01_193014_create_plans_table',1);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (32,'2024_03_01_193036_create_transactions_table',1);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (33,'2024_03_02_204543_change_date_type_users',2);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (34,'2024_03_03_012348_total_price_nullable',3);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (35,'2024_03_03_142400_remove_categories_products_table',3);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (36,'2024_03_03_142754_add_category_id_to_products_table',3);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (37,'2024_03_03_023820_add_phone_vendor_table',4);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (38,'2024_03_03_035712_change_blob_to_varchar_vendors_table',4);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (39,'2024_03_03_115026_add_forign_key_to_vendor_table',5);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (40,'2024_03_05_034936_remove_userAddress_from_orders_table',6);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (41,'2024_03_05_035232_add_foreign_key_to_orders_table',6);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (42,'2024_03_05_040526_add_foreign_key_to_vendors_table',7);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (1,'2019_12_14_000001_create_personal_access_tokens_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (2,'2024_03_01_191328_create_users_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (3,'2024_03_01_191954_create_cards_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (4,'2024_03_01_192022_create_vendors_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (5,'2024_03_01_192101_create_admins_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (6,'2024_03_01_192231_create_products_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (7,'2024_03_01_192257_create_product_images_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (8,'2024_03_01_192321_create_ratings_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (9,'2024_03_01_192346_create_cart_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (10,'2024_03_01_192409_create_cart_items_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (11,'2024_03_01_192828_create_promo_codes_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (12,'2024_03_01_192845_create_categories_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (13,'2024_03_01_192912_create_categories_products_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (14,'2024_03_01_192951_create_orders_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (15,'2024_03_01_193014_create_plans_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (16,'2024_03_01_193036_create_transactions_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (17,'2024_03_02_204543_change_date_type_users',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (18,'2024_03_03_012348_total_price_nullable',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (19,'2024_03_03_023820_add_phone_vendor_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (20,'2024_03_03_035712_change_blob_to_varchar_vendors_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (21,'2024_03_03_115026_add_forign_key_to_vendor_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (22,'2024_03_03_142400_remove_categories_products_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (23,'2024_03_03_142754_add_category_id_to_products_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (24,'2024_03_05_034936_remove_userAddress_from_orders_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (25,'2024_03_05_035232_add_foreign_key_to_orders_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (26,'2024_03_05_040526_add_foreign_key_to_vendors_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (27,'2024_03_05_225356_add_cart_id_to_products_table',2);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (29,'2024_03_06_124440_drop_foreign_key_from_product_images',3);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (30,'2024_03_06_125324_drop_primary_key_from_product_images',4);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (31,'2024_03_06_125414_add_id_to_product_images',5);
