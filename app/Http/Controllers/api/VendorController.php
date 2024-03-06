@@ -65,7 +65,7 @@ class VendorController extends Controller
         $vendor->phone_number = $request->input('phone_number');
         $vendor->password = \Hash::make($request->input('password'));
         $vendor->is_active = false;
-        $vendor->plan_id = 1;
+        $vendor->plan_id = $request->input('plan_id') ?? 1;
         $vendor->save();
 
         // get the vendor id to store the images with the id of its vendor .
@@ -74,6 +74,7 @@ class VendorController extends Controller
         if ($request->hasFile('id_photo_front')) {
             $imageNameWithExtension = $vendorId . '_' . 'id_photo_front' . '.' . $request->file('id_photo_front')->getClientOriginalExtension();
             $request->file('id_photo_front')->move('vendor_images', $imageNameWithExtension);
+            $vendor->id_photo_front = env('APP_URL') . ':8000' . '/vendor_images/' . $imageNameWithExtension;
             $vendor->id_photo_front = env('APP_URL') . ':8000' . '/vendor_images/' . $imageNameWithExtension;
         }
 
@@ -107,6 +108,7 @@ class VendorController extends Controller
         if (!$products) {
             return response()->json(["message" => "Product not found"], 404);
         }
+
         return response()->json(["products" => $products], 200);
     }
 
@@ -128,6 +130,7 @@ class VendorController extends Controller
     {
         $vendor = auth("vendor")->user();
         $product = $vendor->products()->find($id);
+        // dd($product->price);
         // Check if the product exists
         if (!$product) {
             // Product not found, handle the error (return a response, redirect, etc.)
@@ -235,37 +238,6 @@ class VendorController extends Controller
         return response()->json(['message' => 'Image uploaded successfully']);
 
     }
-    public function updateVendorData(Request $request)
-    {
 
-        $validator = Validator::make($request->all(), [
-            'fname' => 'min:3|string',
-            'lname' => 'min:3|string',
-            'business_name' => 'min:3',
-            'email' => 'email|unique:vendors,email',
-            'phone_number' => 'unique:vendors,phone_number|max:11|min:11',
-            'logo_pic' => 'file|image|mimes:jpeg,png,jpg,gif',
-        ]);
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 400);
-        }
-        $vendor = auth('vendor')->user();
-        $vendor->update([
-            'fname' => $request->input('fname') ?? $vendor->fname,
-            'lname' => $request->input('lname') ?? $vendor->lname,
-            'business_name' => $request->input('business_name') ?? $vendor->business_name,
-            'email' => $request->input('email') ?? $vendor->email,
-            'phone_number' => $request->input('phone_number') ?? $vendor->phone_number,
 
-        ]);
-        if ($request->hasFile('logo_pic')) {
-            $imageNameWithExtension = $vendor->id . '_' . 'logo_pic' . '.' . $request->file('logo_pic')->getClientOriginalExtension();
-            $request->file('logo_pic')->move('vendor_images', $imageNameWithExtension);
-            $vendor->logo_pic = env('APP_URL') . ':8000' . '/vendor_images/' . $imageNameWithExtension;
-        }
-        $vendor->save();
-        return response()->json(['message' => 'Vendor Data Updated Successfully'], 200);
-    }
-   
-    
 }

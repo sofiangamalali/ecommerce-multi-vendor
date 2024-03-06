@@ -18,7 +18,7 @@ class CardsTableSeeder extends Seeder
         $user = User::create([
             'fname' => 'John',
             'lname' => 'Doe',
-            'email' => 'john.doe@example.com',
+            'email' => 'johhn.doe@example.com',
             'password' => \Hash::make('password123'),
             'phone_number' => '1234567890',
             'birth_date' => '1990-01-01',
