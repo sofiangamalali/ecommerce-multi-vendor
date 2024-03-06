@@ -8,7 +8,6 @@ use App\Models\Product;
 use App\Models\Product_image;
 use App\Models\Rating;
 use Illuminate\Http\Request;
-use Illuminate\Contracts\Support\Arrayabl;
 
 class ProductController extends Controller
 {
@@ -28,7 +27,7 @@ class ProductController extends Controller
         $vendor = auth('vendor')->user();
 
         $products = $vendor->products;
-
+        // dd($products);
         if (!$products) {
             return response()->json(["message" => "Product not found"], 404);
         }
@@ -36,20 +35,19 @@ class ProductController extends Controller
         return response()->json(["products" => $products], 200);
     }
 
+
     /**
-     * Get a single product with additional information for the authenticated vendor.
+     * Get details of a single product for the authenticated vendor.
      *
-     * @param Request $request
-     * @param array| \Illuminate\Contracts\Support\Arrayable
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function getSingleProduct(Request $request, $id)
     {
         $vendor = auth("vendor")->user();
         $product = $vendor->products->find($id);
-
         if (!$product) {
-            return response()->json(["message" => "Product not found"], 404);
+            return response()->json(["message" => "product not found"], 404);
         }
 
         $p = Product::find($id);
@@ -72,10 +70,11 @@ class ProductController extends Controller
         ], 200);
     }
 
+
     /**
-     * Update product information for the authenticated vendor.
+     * Update a product for the authenticated vendor.
      *
-     * @param Request $request
+     * @param \Illuminate\Http\Request $request
      * @param int $id
      * @return \Illuminate\Http\JsonResponse
      */
@@ -83,8 +82,10 @@ class ProductController extends Controller
     {
         $vendor = auth("vendor")->user();
         $product = $vendor->products()->find($id);
-
+        // dd($product->price);
+        // Check if the product exists
         if (!$product) {
+            // Product not found, handle the error (return a response, redirect, etc.)
             return response()->json(['error' => 'Product not found'], 404);
         }
 
@@ -96,7 +97,10 @@ class ProductController extends Controller
             'stock' => $request->input('stock') ?? $product->stock,
             'is_on_sale' => $request->input('is_on_sale') ?? $product->is_on_sale,
             'cart_id' => $request->input('cart_id') ?? $product->cart_id,
-            'image1' => $request->input('image') ?? $product->image1,
+            'image1' => $request->input('image1') ?? $product->image1,
+            'image2' => $request->input('image2') ?? $product->image2,
+            'image3' => $request->input('image3') ?? $product->image3,
+            'image4' => $request->input('image4') ?? $product->image4,
         ]);
 
         // Return a response indicating the update was successful
@@ -106,38 +110,49 @@ class ProductController extends Controller
     /**
      * Create a new product for the authenticated vendor.
      *
-     * @param Request $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function createProduct(Request $request)
     {
         // Validate the request data
         $validatedData = $request->validate([
-            // ... (your validation rules)
+            'product_name' => 'required|string',
+            'price' => 'required|numeric',
+            'discount' => 'numeric|nullable',
+            'stock' => 'required|integer',
+            'is_on_sale' => 'boolean',
+            'cart_id' => 'required|integer',
+            'category_id' => 'required|integer',
+            'image1' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'image2' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ]);
 
         // Get the authenticated vendor
         $vendor = auth("vendor")->user();
 
+        // $imagePath = $request->file('image')->store('images');
         // Create a new product for the vendor
         $product = $vendor->products()->create([
-            // ... (assign attributes from validated data)
+            "product_name" => $validatedData["product_name"],
+            "price" => $validatedData["price"],
+            "discount" => $validatedData["discount"],
+            "stock" => $validatedData["stock"],
+            "is_on_sale" => $validatedData["is_on_sale"] ?? false,
+            "cart_id" => $validatedData["cart_id"],
+            "category_id" => $validatedData["category_id"],
         ]);
-
-        // Handle product image storage
+        // $product->image_path = $imagePath;
         try {
             $this->storeImage($request, $product->id);
         } catch (\Exception $e) {
             return response()->json($e, 500);
         }
-
-        // Save the product
         $product->save();
-
         // Return a response indicating the success of the creation
         return response()->json([
             'message' => 'Product created successfully',
-            'product' => $product
+            'product' => $product,
         ], 201);
     }
 
@@ -168,18 +183,10 @@ class ProductController extends Controller
         return response()->json(['message' => 'Product deleted successfully']);
     }
 
-    /**
-     * Store product images on the server for a given product ID.
-     *
-     * @param Request $request
-     * @param int $id
-     * @return void
-     * @throws \Exception
-     */
     public function storeImage(Request $request, $id)
     {
         $vendor = auth("vendor")->user();
-
+        // dd($vendor->id);
         try {
             for ($i = 1; $i <= 4; $i++) {
                 // Create a new Product_image instance for each image
@@ -199,20 +206,13 @@ class ProductController extends Controller
         }
     }
 
-    /**
-     * Get product images for a given product ID.
-     *
-     * @param int $productId
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function getImages($productId)
     {
         $images = Product_image::where('product_id', $productId)->get();
 
-        // Return the images in the API response
+        // You can return the images to your view or API response
         return response()->json(['images' => $images]);
     }
-
 }
 
 
