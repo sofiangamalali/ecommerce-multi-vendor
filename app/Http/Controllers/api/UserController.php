@@ -1,11 +1,12 @@
 <?php
 
 namespace App\Http\Controllers\api;
-
+use App\Mail\WelcomeMailForUser;
 use App\Http\Controllers\Controller;
 use App\Models\card;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Validator;
 use App\Models\User;
 
@@ -61,7 +62,9 @@ class UserController extends Controller
             'address' => $request->input('address'),
         ]);
 
+        $user->cart()->create();
 
+        Mail::to($user->email)->send(new WelcomeMailForUser(['fname'=>$user->fname , 'lname'=>$user->lname]));
         return response()->json(['message' => "success", 'user' => $user], 200);
     }
 

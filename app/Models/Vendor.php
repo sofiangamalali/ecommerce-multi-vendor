@@ -11,6 +11,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Auth\Authenticatable as AuthenticatableTrait;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
+
 class Vendor extends Model implements Authenticatable, JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable, AuthenticatableTrait;
@@ -26,7 +27,9 @@ class Vendor extends Model implements Authenticatable, JWTSubject
     protected $hidden = [
         'password',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'id_photo_front',
+        'id_photo_back',
     ];
 
 
@@ -54,5 +57,9 @@ class Vendor extends Model implements Authenticatable, JWTSubject
     public function plan()
     {
         return $this->hasOne(Plan::class, "vendor_id", "id");
+    }
+    public function promoCodes()
+    {
+        return $this->hasMany(PromoCode::class);
     }
 }
