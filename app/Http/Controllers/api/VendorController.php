@@ -55,7 +55,7 @@ class VendorController extends Controller
             return response()->json(['errors' => $validator->errors()], 400);
         }
 
-        
+
         $vendor = new Vendor();
         $vendor->fname = $request->input('fname');
         $vendor->lname = $request->input('lname');
@@ -73,7 +73,7 @@ class VendorController extends Controller
         if ($request->hasFile('id_photo_front')) {
             $imageNameWithExtension = $vendorId . '_' . 'id_photo_front' . '.' . $request->file('id_photo_front')->getClientOriginalExtension();
             $request->file('id_photo_front')->move('vendor_images', $imageNameWithExtension);
-            $vendor->id_photo_front =  env('APP_URL') . ':8000' .'/vendor_images/' . $imageNameWithExtension;
+            $vendor->id_photo_front = env('APP_URL') . ':8000' . '/vendor_images/' . $imageNameWithExtension;
         }
 
 
@@ -86,14 +86,14 @@ class VendorController extends Controller
         if ($request->hasFile('logo_pic')) {
             $imageNameWithExtension = $vendorId . '_' . 'logo_pic' . '.' . $request->file('logo_pic')->getClientOriginalExtension();
             $request->file('logo_pic')->move('vendor_images', $imageNameWithExtension);
-            $vendor->logo_pic =  env('APP_URL') . ':8000' .'/vendor_images/' . $imageNameWithExtension;
+            $vendor->logo_pic = env('APP_URL') . ':8000' . '/vendor_images/' . $imageNameWithExtension;
         }
         $vendor->save();
         return response()->json(['message' => 'Vendor registered successfully'], 201);
 
 
 
-    
+
     }
 
     ///////// products
@@ -238,5 +238,5 @@ class VendorController extends Controller
 
     }
 
-   
+
 }

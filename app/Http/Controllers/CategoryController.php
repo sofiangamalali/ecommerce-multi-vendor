@@ -24,7 +24,14 @@ class CategoryController extends Controller
         $category = new Category();
         $category->name = $request->name;
         $category->save();
-        return response()->json(new CategoryResource($category));
+        $categoryId = $category->id;
+        if ($request->hasFile('category_image')) {
+            $imageNameWithExtension = $categoryId . '_' . 'category_image' . '.' . $request->file('category_image')->getClientOriginalExtension();
+            $request->file('category_image')->move('category_images', $imageNameWithExtension);
+            $category->category_image = env('APP_URL') . ':8000' . '/category_images/' . $imageNameWithExtension;
+        }
+        $category->save();
+        return response()->json(['message' => 'Category created successfully']);
 
     }
 
