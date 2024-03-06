@@ -52,7 +52,6 @@ Route::controller(VendorController::class)
         Route::post("login", "loginVendor");
         Route::post("register", "registerVendor");
 
-
     });
 
 // product Routes
@@ -62,6 +61,7 @@ Route::controller(ProductController::class)
         // Product Routes
         Route::get("products", "getProducts");
         Route::get("products/{id}", "getSingleProduct");
+        Route::get("products/images/{id}", "getImages");
         Route::patch("products/{id}", "updateProduct");
         Route::post("products", "createProduct");
         Route::delete("/products/{id}", "deleteProduct");

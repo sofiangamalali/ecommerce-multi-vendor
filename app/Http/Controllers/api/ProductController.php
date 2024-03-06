@@ -45,9 +45,14 @@ class ProductController extends Controller
         $ratings = $p->rating()->findMany($id)->all();
         $images = Product_image::findMany($id)->all();
 
+        // exclude products from vendor
+        $vendorData = $vendor->toArray();
+        unset($vendorData['products']);
+
         return response()->json([
             "message" => "Product Found",
             "product" => $product,
+            "vendor" => $vendorData,
             "ratings" => $ratings,
             "category" => $category,
             "images" => $images,
@@ -72,7 +77,8 @@ class ProductController extends Controller
             'discount' => $request->input('discount') ?? $product->discount,
             'stock' => $request->input('stock') ?? $product->stock,
             'is_on_sale' => $request->input('is_on_sale') ?? $product->is_on_sale,
-            'cart_id' => $request->input('cart_id') ?? $product->cart_id
+            'cart_id' => $request->input('cart_id') ?? $product->cart_id,
+            'image1' => $request->input('image') ?? $product->image1,
         ]);
 
         // Return a response indicating the update was successful
