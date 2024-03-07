@@ -11,6 +11,7 @@ use App\Http\Controllers\api\AdminController;
 use App\Http\Controllers\api\VendorController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\WishListController;
 use GuzzleHttp\Middleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -58,10 +59,9 @@ Route::group(["prefix" => "admin"], function () {
 Route::controller(VendorController::class)
     ->prefix("vendor")
     ->group(function () {
-        // Route::post("login", [VendorController::class, "loginVendor"]);
-        // Route::post("register", [VendorController::class, "registerVendor"]);
         Route::post("login", "loginVendor");
         Route::post("register", "registerVendor");
+        Route::get("get-data" ,'getAllData');
 
     });
 
@@ -83,6 +83,7 @@ Route::controller(ProductController::class)
 
 
         Route::post("update-vendor-data", "updateVendorData");
+       
 
 
 
@@ -91,3 +92,4 @@ Route::controller(ProductController::class)
 Route::get('/search', [SearchController::class, 'search']);
 Route::resource('/category', CategoryController::class);
 
+Route::get('getwishlist/{id}' , [WishListController::class , 'getUserWishlist']);

@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
-use App\Models\{Product, Vendor, PromoCode};
+use App\Models\{Vendor};
+use App\Models\Plan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Validator;
@@ -96,10 +97,6 @@ class VendorController extends Controller
 
     }
 
-
-
-
-
     public function updateVendorData(Request $request)
     {
 
@@ -132,12 +129,22 @@ class VendorController extends Controller
     }
 
 
-    public function getPlan()
-    {
-        // Get the authenticated vendor
-        $vendor = auth("vendor")->user();
-        return $vendor->plan;
-    }
 
+    public function getAllData()
+    {
+        $vendor = auth('vendor')->user();
+        return response()->json(
+            [
+                "message" => "success",
+                "data" => [
+                    'numberOfProducts' => $vendor->products()->count(),
+                    'plan' => Plan::find($vendor->plan_id)->name,
+                    'business_name' => $vendor->business_name,
+                    'accountStatus'=>$vendor->is_active?'Verified':'Suspended',
+                ]
+            ],
+            200
+        );
+    }
 
 }
