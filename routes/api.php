@@ -11,6 +11,7 @@ use App\Http\Controllers\api\AdminController;
 use App\Http\Controllers\api\VendorController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\api\RatingController;
 use GuzzleHttp\Middleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -21,6 +22,8 @@ Route::group(["prefix" => "user"], function () {
     Route::post("login", [UserController::class, "loginUser"]);
     Route::post("register", [UserController::class, "registerUser"]);
     Route::resource('/cart', CartController::class)->middleware('auth:user');
+    Route::resource('/rating', RatingController::class)->middleware('auth:user');
+
     // write users routes
     // card routes
     Route::get("card/{id}", [CardController::class, "getCard"]);
