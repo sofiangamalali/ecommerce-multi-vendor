@@ -57,8 +57,5 @@ class Vendor extends Model implements Authenticatable, JWTSubject
     {
         return $this->belongsTo(Plan::class, "vendor_id", "id");
     }
-    public function promoCodes()
-    {
-        return $this->hasMany(PromoCode::class);
-    }
+
 }
