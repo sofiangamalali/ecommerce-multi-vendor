@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\Product_image;
 use App\Models\Rating;
 use Illuminate\Http\Request;
+use App\Http\Resources\ProductResource;
 
 class ProductController extends Controller
 {
@@ -25,7 +26,6 @@ class ProductController extends Controller
     public function getProducts()
     {
         $vendor = auth('vendor')->user();
-
         $products = $vendor->products;
 
         if (!$products) {
@@ -37,9 +37,38 @@ class ProductController extends Controller
             $result[$product->id] = $product->images;
             $result[$product->id] = $product;
         }
-
         return response()->json(["products" => $result], 200);
+
     }
+    public function getAllProducts()
+    {
+        $result = [];
+
+        $products = Product::all();
+        foreach ($products as $product) {
+            $imagePaths = [];
+            foreach ($product->images as $image) {
+                $imagePaths[] = $image->image;
+            }
+            $productData = [
+                'id' => $product->id,
+                'vendor_id' => $product->vendor_id,
+                'product_name' => $product->product_name,
+                'price' => $product->price,
+                'discount' => $product->discount,
+                'stock' => $product->stock,
+                'is_on_sale' => $product->is_on_sale,
+                'created_at' => $product->created_at,
+                'updated_at' => $product->updated_at,
+                'category_id' => $product->category_id,
+                'images' => $imagePaths
+            ];
+            $result[] = $productData;
+        }
+
+        return response()->json(["products" => $result]);
+    }
+
 
 
     /**
@@ -48,7 +77,7 @@ class ProductController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getSingleProduct(Request $request, $id)
+    public function getSingleProduct($id)
     {
         $vendor = auth("vendor")->user();
         $product = $vendor->products->find($id);
@@ -56,10 +85,10 @@ class ProductController extends Controller
             return response()->json(["message" => "product not found"], 404);
         }
 
-        $p = Product::find($id);
+        $product = Product::find($id);
         // get category info
         $category = Category::find($product->category_id);
-        $ratings = $p->rating()->findMany($id)->all();
+        $ratings = $product->rating()->findMany($id)->all();
         $images = Product_image::findMany($id)->all();
 
         // exclude products from vendor
@@ -75,7 +104,28 @@ class ProductController extends Controller
             "images" => $images,
         ], 200);
     }
-
+    public function getSingleProductById($id)
+    {
+        $product = Product::find($id);
+        if (!$product) {
+            return response()->json(["message" => "product not found"], 404);
+        }
+        // get category info
+        $category = Category::find($product->category_id);
+        $ratings = $product->rating()->findMany($id)->all();
+        $images = Product_image::findMany($id)->all();
+        $imagePaths = [];
+        foreach ($images as $image) {
+            $imagePaths[] = $image->image;
+        }
+        return response()->json([
+            "message" => "Product Found",
+            "product" => $product,
+            "ratings" => $ratings,
+            "category" => $category->name,
+            "images" => $imagePaths,
+        ], 200);
+    }
 
     /**
      * Update a product for the authenticated vendor.
@@ -102,7 +152,6 @@ class ProductController extends Controller
             'discount' => $request->input('discount') ?? $product->discount,
             'stock' => $request->input('stock') ?? $product->stock,
             'is_on_sale' => $request->input('is_on_sale') ?? $product->is_on_sale,
-            'cart_id' => $request->input('cart_id') ?? $product->cart_id,
             'image1' => $request->input('image1') ?? $product->image1,
             'image2' => $request->input('image2') ?? $product->image2,
             'image3' => $request->input('image3') ?? $product->image3,
@@ -128,7 +177,6 @@ class ProductController extends Controller
             'discount' => 'numeric|nullable',
             'stock' => 'required|integer',
             'is_on_sale' => 'boolean',
-            'cart_id' => 'required|integer',
             'category_id' => 'required|integer',
             'image1' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'image2' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048',
@@ -147,7 +195,6 @@ class ProductController extends Controller
             "discount" => $validatedData["discount"],
             "stock" => $validatedData["stock"],
             "is_on_sale" => $validatedData["is_on_sale"] ?? false,
-            "cart_id" => $validatedData["cart_id"],
             "category_id" => $validatedData["category_id"],
         ]);
         // $product->image_path = $imagePath;

@@ -11,6 +11,7 @@ class Rating extends Model
     public $timestamps = false;
 
     protected $primaryKey = 'product_id';
+    protected $hidden = ['product_id'];
     public $incrementing = false;
 
     public function products()

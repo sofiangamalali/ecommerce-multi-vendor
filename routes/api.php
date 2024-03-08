@@ -79,11 +79,10 @@ Route::controller(VendorController::class)
 
 // product Routes
 Route::controller(ProductController::class)
-    ->middleware("auth:vendor")
     ->group(function () {
         // Product Routes
-        Route::get("products", "getProducts");
-        Route::get("products/{id}", "getSingleProduct");
+        Route::get("products", "getProducts")->prefix("vendor");
+        Route::get("products/{id}", "getSingleProduct")->prefix("vendor");
         Route::get("products/images/{id}", "getImages");
         Route::patch("products/{id}", "updateProduct");
         Route::post("products", "createProduct");
@@ -102,3 +101,5 @@ Route::controller(ProductController::class)
 Route::get('/search', [SearchController::class, 'search']);
 Route::resource('/category', CategoryController::class);
 
+Route::get("products", [ProductController::class, "getAllProducts"]);
+Route::get("products/{id}", [ProductController::class, "getSingleProductById"]);
