@@ -11,6 +11,7 @@ use App\Http\Controllers\api\AdminController;
 use App\Http\Controllers\api\VendorController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\WishListController;
 use App\Http\Controllers\api\RatingController;
 use GuzzleHttp\Middleware;
@@ -32,7 +33,8 @@ Route::group(["prefix" => "user"], function () {
     Route::post('ratings', [RatingController::class, 'store'])->middleware('auth:user');
 
 
-
+    //Get payment methods
+    Route::get('payments' , [PaymentController::class ,'getAllPayment']);
 
 
     // card routes
@@ -52,7 +54,15 @@ Route::group(["prefix" => "user"], function () {
 Route::group(["prefix" => "admin"], function () {
     Route::post("login", [AdminController::class, "loginAdmin"]);
     Route::post("register", [AdminController::class, "registerAdmin"]);
+
     Route::resource('cart', CartController::class)->middleware('auth:admin');
+
+
+    //PaymentMethods
+    Route::get('payments' , [PaymentController::class ,'getAllPayment'])->middleware('auth:admin');
+    Route::post('payment/create' , [PaymentController::class ,'createPayment'])->middleware('auth:admin');
+    Route::patch('payment/update/{id}' , [PaymentController::class ,'updatePayment'])->middleware('auth:admin');
+    Route::delete('payment/delete/{id}' , [PaymentController::class ,'deletePayment'])->middleware('auth:admin');
 
     //PromoCode
     Route::get('promocodes', [PromoCodeController::class, 'getPromoCodes'])->middleware('auth:admin');
@@ -64,7 +74,9 @@ Route::group(["prefix" => "admin"], function () {
     //Vendor
     Route::post('activate-vendor/{id}', [AdminController::class, 'activateVendor']);
     Route::post('suspend-vendor/{id}', [AdminController::class, 'suspendVendor']);
-    Route::get('get-all-data', [AdminController::class, 'getAllData']);
+
+
+
     // write admin routes
 });
 
@@ -73,8 +85,8 @@ Route::controller(VendorController::class)
     ->group(function () {
         Route::post("login", "loginVendor");
         Route::post("register", "registerVendor");
-        Route::get("get-data", 'getAllData');
-
+        Route::get("get-data" ,'getAllData');
+        Route::get("get-vendor-data" ,'getVendorData');
     });
 
 // product Routes
@@ -90,7 +102,10 @@ Route::controller(ProductController::class)
         Route::post("update-vendor-data", "updateVendorData");
 
 
+        Route::get('/search', [SearchController::class, 'search']);
         Route::post("update-vendor-data", "updateVendorData");
+
+
 
 
     });

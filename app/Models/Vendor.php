@@ -28,8 +28,7 @@ class Vendor extends Model implements Authenticatable, JWTSubject
         'password',
         'created_at',
         'updated_at',
-        'id_photo_front',
-        'id_photo_back',
+
     ];
 
 
@@ -58,8 +57,5 @@ class Vendor extends Model implements Authenticatable, JWTSubject
     {
         return $this->belongsTo(Plan::class, "vendor_id", "id");
     }
-    public function promoCodes()
-    {
-        return $this->hasMany(PromoCode::class);
-    }
+
 }
