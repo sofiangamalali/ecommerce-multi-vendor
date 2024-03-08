@@ -293,6 +293,11 @@ class ProductController extends Controller
         // Retrieve paginated data from the database
         $products = Product::paginate($perPage);
 
+        // get query parameters
+        $query = $request->query->all();
+        if ($query["page"] > $products->lastPage())
+            return response()->json(["message" => "invalid page number"], 404);
+
         // You can customize the response structure if needed
         return response()->json(['products' => $products]);
     }

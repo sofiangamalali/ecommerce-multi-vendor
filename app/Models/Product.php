@@ -33,10 +33,7 @@ class Product extends Model
         'created_at',
         'updated_at',
     ];
-    protected $hidden = [
-        'created_at',
-        'updated_at',
-    ];
+
     public function images()
     {
         return $this->hasMany(Product_image::class);
