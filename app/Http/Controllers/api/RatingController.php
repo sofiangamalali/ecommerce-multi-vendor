@@ -67,12 +67,13 @@ class RatingController extends Controller
             'rate' => 'numeric|between:0,5'
         ]);
         $rating = Rating::where('user_id', $user->id)
-            ->where('product_id', $request->productId)
+            ->where('product_id', $request->product_id)
             ->first();
         $rating->rate = $validatedData['rate'];
         $rating->review = $request->review;
         $rating->update();
 
+        $this->calculateAverageRating($request->product_id);
         return response()->json(['message' => 'Review updated successfully']);
     }
 
