@@ -12,15 +12,21 @@ use Illuminate\Http\Request;
 class RatingController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of ratings.
+     *
+     * @return \RatingResource::collection
      */
     public function index()
     {
         return RatingResource::collection(Rating::all());
     }
 
+
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created rating in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(Request $request)
     {
@@ -46,7 +52,10 @@ class RatingController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display the ratings for a specific product.
+     *
+     * @param  string  $id
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show(string $id)
     {
@@ -57,7 +66,10 @@ class RatingController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified rating in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(Request $request)
     {
@@ -78,7 +90,10 @@ class RatingController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified rating from storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(Request $request)
     {
@@ -90,6 +105,12 @@ class RatingController extends Controller
         return response()->json(['message' => 'Review deleted successfully']);
     }
 
+    /**
+     * Calculate and update the average rating for a product.
+     *
+     * @param  int  $productId
+     * @return void
+     */
     public function calculateAverageRating($productId)
     {
         // Retrieve the product
@@ -104,9 +125,7 @@ class RatingController extends Controller
         // Update the product's averageRating field
         $product->update(['averageRating' => $averageRating]);
 
-        // You can also save the product if you want to persist the changes
         $product->save();
 
-        // return response()->json(['message' => 'Average rating calculated successfully']);
     }
 }
