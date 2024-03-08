@@ -116,15 +116,19 @@ class ProductController extends Controller
         $ratings = $product->rating()->findMany($id)->all();
         $images = Product_image::findMany($id)->all();
         $imagePaths = [];
+        $recommended = $this->getRecommendedProducts(8);
+
         foreach ($images as $image) {
             $imagePaths[] = $image->image;
         }
+
         return response()->json([
             "message" => "Product Found",
             "product" => $product,
             "ratings" => $ratings,
             "category" => $category->name,
             "images" => $imagePaths,
+            "recommended" => $recommended
         ], 200);
     }
 
@@ -300,5 +304,10 @@ class ProductController extends Controller
 
         // You can customize the response structure if needed
         return response()->json(['products' => $products]);
+    }
+
+    public function getRecommendedProducts($number)
+    {
+        return Product::inRandomOrder()->take($number)->get();
     }
 }
