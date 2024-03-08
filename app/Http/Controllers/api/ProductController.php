@@ -35,6 +35,7 @@ class ProductController extends Controller
         $result = [];
         foreach ($products as $product) {
             $result[$product->id] = $product->images;
+            $result[$product->id] = $products->rating;
             $result[$product->id] = $product;
         }
         return response()->json(["products" => $result], 200);
@@ -156,6 +157,7 @@ class ProductController extends Controller
             'image2' => $request->input('image2') ?? $product->image2,
             'image3' => $request->input('image3') ?? $product->image3,
             'image4' => $request->input('image4') ?? $product->image4,
+            'descreption' => $request->input('descreption') ?? $product->descreption
         ]);
 
         // Return a response indicating the update was successful
