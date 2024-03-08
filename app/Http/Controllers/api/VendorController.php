@@ -102,7 +102,7 @@ class VendorController extends Controller
     public function updateVendorData(Request $request)
     {
 
-        $validator = Validator::make($request->all(), [
+        $validator = $request->validate([
             'fname' => 'min:3|string',
             'lname' => 'min:3|string',
             'businessname' => 'min:3',
