@@ -29,7 +29,6 @@ class OrderController extends Controller
         // Validate the request data
         $data = $request->validate([
             "status" => "required|string",
-            'cart_id' => "required|integer",
             'payment_method' => "required|string",
         ]);
 
@@ -37,7 +36,7 @@ class OrderController extends Controller
         $order = Order::create([
             "status" => $data['status'],
             "payment_method" => $data['payment_method'],
-            "cart_id" => $data["cart_id"],
+            "cart_id" => $user->cart->id,
             "user_id" => $user->id
         ]);
 

@@ -31,7 +31,14 @@ class CartController extends Controller
         foreach ($request->products as $product) {
             $cart->products()->syncWithoutDetaching([$product['productId'] => ['quantity' => $product['quantity']]]);
             $dbProduct = Product::find($product['productId']);
+            if ($dbProduct->stock < $product['quantity']) {
+                return response()->json([
+                    'message' => 'Product out of stock',
+                    'stock number' => $dbProduct->stock
+                ]);
+            }
             $totalPrice += $dbProduct->price * $product['quantity'];
+
         }
         $cart->update([
             'total_price' => $totalPrice
@@ -68,15 +75,21 @@ class CartController extends Controller
 
         foreach ($request->products as $productId) {
             $cartItem = $cart->products()->where('product_id', $productId)->first();
+            $dbProduct = Product::find($productId['productId']);
 
             if ($request->operation == 'add') {
                 $newQuantity = $cartItem->pivot->quantity + 1;
+                if ($dbProduct->stock < $newQuantity) {
+                    return response()->json([
+                        'message' => 'Product out of stock',
+                        'stock number' => $dbProduct->stock
+                    ]);
+                }
             } elseif ($request->operation == 'subtract') {
                 $newQuantity = max($cartItem->pivot->quantity - 1, 1);
             }
 
             $cart->products()->updateExistingPivot($productId, ['quantity' => $newQuantity]);
-            $dbProduct = Product::find($productId['productId']);
             $totalPrice += $dbProduct->price * $newQuantity;
 
         }

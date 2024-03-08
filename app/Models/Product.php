@@ -25,7 +25,10 @@ class Product extends Model
         'category_id',
         'cart_id'
     ];
-
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
     public function images()
     {
         return $this->hasMany(Product_image::class);
@@ -46,6 +49,10 @@ class Product extends Model
     }
     public function rating()
     {
-        return $this->hasMany(Rating::class);
+        return $this->hasMany(Rating::class, 'product_id');
+    }
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
     }
 }
