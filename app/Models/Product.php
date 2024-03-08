@@ -25,12 +25,15 @@ class Product extends Model
         'stock',
         'is_on_sale',
         'category_id',
-        'cart_id'
+        'cart_id',
+        'descreption',
     ];
+
     protected $hidden = [
         'created_at',
         'updated_at',
     ];
+
     public function images()
     {
         return $this->hasMany(Product_image::class);

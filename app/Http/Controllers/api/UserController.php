@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\api;
+
 use App\Mail\WelcomeMailForUser;
 use App\Http\Controllers\Controller;
 use App\Models\card;
@@ -65,11 +66,59 @@ class UserController extends Controller
         $user->cart()->create();
 
 
-        Mail::to($user->email)->send(new WelcomeMailForUser(['fname'=>$user->fname , 'lname'=>$user->lname]));
+        Mail::to($user->email)->send(new WelcomeMailForUser(['fname' => $user->fname, 'lname' => $user->lname]));
         return response()->json(['message' => "success", 'user' => $user], 200);
     }
 
+    public function showUser($id)
+    {
+        $user = User::find($id);
 
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
 
+        return response()->json(['user' => $user], 200);
+    }
+
+    public function updateUser(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'fname' => 'min:3|string',
+            'lname' => 'min:3|string',
+            'email' => 'email|unique:users,email',
+            'password' => 'min:8',
+            'phone_number' => 'string|max:11|min:11',
+            'birth_date' => 'string',
+            'address' => 'string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 400);
+        }
+
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+
+        $user->update($request->all());
+
+        return response()->json(['message' => 'User updated successfully', 'user' => $user], 200);
+    }
+
+    public function deleteUser($id)
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+
+        $user->delete();
+
+        return response()->json(['message' => 'User deleted successfully'], 200);
+    }
 
 }

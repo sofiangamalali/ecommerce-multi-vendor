@@ -35,6 +35,7 @@ class ProductController extends Controller
         $result = [];
         foreach ($products as $product) {
             $result[$product->id] = $product->images;
+            $result[$product->id] = $products->rating;
             $result[$product->id] = $product;
         }
         return response()->json(["products" => $result], 200);
@@ -156,6 +157,7 @@ class ProductController extends Controller
             'image2' => $request->input('image2') ?? $product->image2,
             'image3' => $request->input('image3') ?? $product->image3,
             'image4' => $request->input('image4') ?? $product->image4,
+            'descreption' => $request->input('descreption') ?? $product->descreption
         ]);
 
         // Return a response indicating the update was successful
@@ -182,8 +184,8 @@ class ProductController extends Controller
             'image2' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'image3' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'image4' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'descreption' => 'required|string|min:10',
         ]);
-
         // Get the authenticated vendor
         $vendor = auth("vendor")->user();
 
@@ -196,7 +198,9 @@ class ProductController extends Controller
             "stock" => $validatedData["stock"],
             "is_on_sale" => $validatedData["is_on_sale"] ?? false,
             "category_id" => $validatedData["category_id"],
+            "descreption" => $validatedData['descreption'],
         ]);
+        // dd($product);x
         // $product->image_path = $imagePath;
         try {
             $this->storeImage($request, $product->id);
@@ -261,6 +265,12 @@ class ProductController extends Controller
         }
     }
 
+    /**
+     * Get images associated with a specific product.
+     *
+     * @param int $productId The ID of the product.
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getImages($productId)
     {
         $images = Product_image::where('product_id', $productId)->get();
@@ -268,6 +278,27 @@ class ProductController extends Controller
         // You can return the images to your view or API response
         return response()->json(['images' => $images]);
     }
+
+    /**
+     * Get a paginated list of products.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getProductsPerPage(Request $request)
+    {
+        // Define the number of items per page
+        $perPage = $request->input('per_page', 10);
+
+        // Retrieve paginated data from the database
+        $products = Product::paginate($perPage);
+
+        // get query parameters
+        $query = $request->query->all();
+        if ($query["page"] > $products->lastPage())
+            return response()->json(["message" => "invalid page number"], 404);
+
+        // You can customize the response structure if needed
+        return response()->json(['products' => $products]);
+    }
 }
-
-

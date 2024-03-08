@@ -27,6 +27,7 @@ class CartController extends Controller
     public function store(Request $request)
     {
         $cart = Cart::where("user_id", $request->user()->id)->first();
+
         $totalPrice = 0;
         foreach ($request->products as $product) {
             $cart->products()->syncWithoutDetaching([$product['productId'] => ['quantity' => $product['quantity']]]);
@@ -38,11 +39,16 @@ class CartController extends Controller
                 ]);
             }
             $totalPrice += $dbProduct->price * $product['quantity'];
+            if ($dbProduct['discount']) {
+                $totalPrice -= ($dbProduct->price * $product['quantity']) * $dbProduct['discount'];
+            }
+
 
         }
         $cart->update([
             'total_price' => $totalPrice
         ]);
+
 
         return response()->json([
             'message' => 'Cart created successfully',
@@ -123,10 +129,14 @@ class CartController extends Controller
                 $userCart->products()->detach($productId);
 
                 $totalPrice -= $removedPrice;
+                $products = $userCart->products->all();
+                if (count($products) === 0) {
+                    $totalPrice = 0;
+                }
 
             }
-            $cart->update(['total_price' => $totalPrice]);
 
+            $cart->update(['total_price' => $totalPrice]);
             return response()->json(['message' => 'Item removed successfully', 'data' => new CartResource($cart)]);
 
         }

@@ -25,10 +25,10 @@ Route::group(["prefix" => "user"], function () {
     Route::resource('/cart', CartController::class)->middleware('auth:user');
     Route::resource('/rating', RatingController::class)->middleware('auth:user');
     //wishList
-    Route::get('getwishlist' , [WishListController::class , 'getUserWishlist'])->middleware('auth:user');
-    Route::post('wishlist/add' , [WishListController::class , 'addProductToWishlist'])->middleware('auth:user');
-    Route::delete('wishlist/delete' , [WishListController::class , 'deleteProductFromWishlist'])->middleware('auth:user');
-    // write users routes   
+    Route::get('getwishlist', [WishListController::class, 'getUserWishlist'])->middleware('auth:user');
+    Route::post('wishlist/add', [WishListController::class, 'addProductToWishlist'])->middleware('auth:user');
+    Route::delete('wishlist/delete', [WishListController::class, 'deleteProductFromWishlist'])->middleware('auth:user');
+    // write users routes
 
 
 
@@ -75,7 +75,6 @@ Route::controller(VendorController::class)
         Route::post("register", "registerVendor");
         Route::get("get-data" ,'getAllData');
         Route::get("get-vendor-data" ,'getVendorData');
-
     });
 
 // product Routes
@@ -93,7 +92,7 @@ Route::controller(ProductController::class)
 
         Route::get('/search', [SearchController::class, 'search']);
         Route::post("update-vendor-data", "updateVendorData");
-       
+
 
 
 
@@ -104,3 +103,4 @@ Route::resource('/category', CategoryController::class);
 
 Route::get("products", [ProductController::class, "getAllProducts"]);
 Route::get("products/{id}", [ProductController::class, "getSingleProductById"]);
+Route::get("productsPages", [ProductController::class, "getProductsPerPage"]);
