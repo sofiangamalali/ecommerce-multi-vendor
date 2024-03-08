@@ -29,7 +29,7 @@ Route::group(["prefix" => "user"], function () {
     Route::post('wishlist/add', [WishListController::class, 'addProductToWishlist'])->middleware('auth:user');
     Route::delete('wishlist/delete', [WishListController::class, 'deleteProductFromWishlist'])->middleware('auth:user');
     // write users routes
-    Route::post('ratings', [RatingController::class, 'store']);
+    Route::post('ratings', [RatingController::class, 'store'])->middleware('auth:user');
 
 
 

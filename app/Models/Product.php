@@ -27,6 +27,7 @@ class Product extends Model
         'category_id',
         'cart_id',
         'descreption',
+        'averageRating'
     ];
 
     protected $hidden = [
@@ -64,4 +65,18 @@ class Product extends Model
     {
         return ProductFactory::new();
     }
+
+    // public function getAverageRating()
+    // {
+    //     return $this->rating->avg('rate');
+    // }
+
+    // protected static function boot()
+    // {
+    //     parent::boot();
+
+    //     static::saved(function ($product) {
+    //         $product->update(['averageRating' => $product->averageRating]);
+    //     });
+    // }
 }

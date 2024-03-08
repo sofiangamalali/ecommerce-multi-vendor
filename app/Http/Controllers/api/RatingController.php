@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api;
 use App\Http\Controllers\Controller;
 
 use App\Http\Resources\RatingResource;
+use App\Models\Product;
 use App\Models\Rating;
 use Illuminate\Http\Request;
 
@@ -36,6 +37,9 @@ class RatingController extends Controller
         $rating->rate = $validatedData['rate'];
         $rating->review = $request->review;
         $rating->save();
+
+        // update average rating
+        $this->calculateAverageRating($request->product_id);
 
         return response()->json(['message' => 'Review submitted successfully']);
 
@@ -83,5 +87,25 @@ class RatingController extends Controller
             ->first();
         $rating->delete();
         return response()->json(['message' => 'Review deleted successfully']);
+    }
+
+    public function calculateAverageRating($productId)
+    {
+        // Retrieve the product
+        $product = Product::findOrFail($productId);
+
+        // Get the ratings for the product
+        $ratings = $product->rating;
+
+        // Calculate the average rating
+        $averageRating = $ratings->avg('rate');
+
+        // Update the product's averageRating field
+        $product->update(['averageRating' => $averageRating]);
+
+        // You can also save the product if you want to persist the changes
+        $product->save();
+
+        // return response()->json(['message' => 'Average rating calculated successfully']);
     }
 }
