@@ -5,8 +5,10 @@ namespace App\Http\Controllers\api;
 use App\Http\Controllers\Controller;
 use App\Models\{Vendor};
 use App\Models\Plan;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Spatie\LaravelIgnition\Solutions\SolutionProviders\ViewNotFoundSolutionProvider;
 use Validator;
 use App\Mail\WelcomeMailForVendor;
 
@@ -133,6 +135,16 @@ class VendorController extends Controller
     public function getAllData()
     {
         $vendor = auth('vendor')->user();
+        $products = $vendor->products->all();
+        $ratings = [];
+
+        foreach ($products as $product) {
+            $DBproduct = Product::find($product->id);
+            $DBratings = $DBproduct->rating->all();
+            if (count($DBratings) > 0)
+                $ratings[$product->id] = $DBratings;
+        }
+
         return response()->json(
             [
                 "message" => "success",
@@ -140,7 +152,9 @@ class VendorController extends Controller
                     'numberOfProducts' => $vendor->products()->count(),
                     'plan' => Plan::find($vendor->plan_id)->name,
                     'business_name' => $vendor->business_name,
-                    'accountStatus'=>$vendor->is_active?'Verified':'Suspended',
+                    'accountStatus' => $vendor->is_active ? 'Verified' : 'Suspended',
+                    'ratings' => $ratings,
+                    'ratingsCount' => count($ratings),
                 ]
             ],
             200

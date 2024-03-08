@@ -30,6 +30,7 @@ Route::group(["prefix" => "user"], function () {
     Route::post('wishlist/add', [WishListController::class, 'addProductToWishlist'])->middleware('auth:user');
     Route::delete('wishlist/delete', [WishListController::class, 'deleteProductFromWishlist'])->middleware('auth:user');
     // write users routes
+    Route::post('ratings', [RatingController::class, 'store'])->middleware('auth:user');
 
 
     //Get payment methods
@@ -62,7 +63,7 @@ Route::group(["prefix" => "admin"], function () {
     Route::post('payment/create' , [PaymentController::class ,'createPayment'])->middleware('auth:admin');
     Route::patch('payment/update/{id}' , [PaymentController::class ,'updatePayment'])->middleware('auth:admin');
     Route::delete('payment/delete/{id}' , [PaymentController::class ,'deletePayment'])->middleware('auth:admin');
-    
+
     //PromoCode
     Route::get('promocodes', [PromoCodeController::class, 'getPromoCodes'])->middleware('auth:admin');
     Route::post('promocode/add', [PromoCodeController::class, 'addPromoCode'])->middleware('auth:admin');
@@ -73,7 +74,7 @@ Route::group(["prefix" => "admin"], function () {
     //Vendor
     Route::post('activate-vendor/{id}', [AdminController::class, 'activateVendor']);
     Route::post('suspend-vendor/{id}', [AdminController::class, 'suspendVendor']);
-   
+
 
 
     // write admin routes
@@ -99,6 +100,14 @@ Route::controller(ProductController::class)
         Route::post("products", "createProduct");
         Route::delete("/products/{id}", "deleteProduct");
         Route::post("update-vendor-data", "updateVendorData");
+
+
+        Route::get('/search', [SearchController::class, 'search']);
+        Route::post("update-vendor-data", "updateVendorData");
+
+
+
+
     });
 
 Route::get('/search', [SearchController::class, 'search']);
