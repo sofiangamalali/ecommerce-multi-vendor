@@ -79,4 +79,9 @@ class Product extends Model
     //         $product->update(['averageRating' => $product->averageRating]);
     //     });
     // }
+
+    public function getRatingCount()
+    {
+        return $this->rating()->groupBy('user_id')->count();
+    }
 }
