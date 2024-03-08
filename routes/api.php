@@ -74,6 +74,7 @@ Route::controller(VendorController::class)
         Route::post("login", "loginVendor");
         Route::post("register", "registerVendor");
         Route::get("get-data" ,'getAllData');
+        Route::get("get-vendor-data" ,'getVendorData');
 
     });
 

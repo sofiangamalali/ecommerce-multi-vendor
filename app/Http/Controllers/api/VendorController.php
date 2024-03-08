@@ -146,5 +146,13 @@ class VendorController extends Controller
             200
         );
     }
+    public function getVendorData(){
+        $vendor = auth('vendor')->user();
+
+        $vendorData= Vendor::find($vendor->id);
+
+        return response()->json(['data' => $vendorData],200);
+        
+    }
 
 }

@@ -28,8 +28,7 @@ class Vendor extends Model implements Authenticatable, JWTSubject
         'password',
         'created_at',
         'updated_at',
-        'id_photo_front',
-        'id_photo_back',
+
     ];
 
 
