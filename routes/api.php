@@ -86,6 +86,7 @@ Route::controller(VendorController::class)
         Route::post("register", "registerVendor");
         Route::get("get-data" ,'getAllData');
         Route::get("get-vendor-data" ,'getVendorData');
+        Route::post("update-vendor-data", "updateVendorData");
     });
 
 // product Routes
@@ -98,7 +99,7 @@ Route::controller(ProductController::class)
         Route::patch("products/{id}", "updateProduct");
         Route::post("products", "createProduct");
         Route::delete("/products/{id}", "deleteProduct");
-        Route::post("update-vendor-data", "updateVendorData");
+      
     });
 
 Route::get('/search', [SearchController::class, 'search']);

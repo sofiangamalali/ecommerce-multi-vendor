@@ -141,6 +141,7 @@ class VendorController extends Controller
                     'plan' => Plan::find($vendor->plan_id)->name,
                     'business_name' => $vendor->business_name,
                     'accountStatus'=>$vendor->is_active?'Verified':'Suspended',
+                    
                 ]
             ],
             200
