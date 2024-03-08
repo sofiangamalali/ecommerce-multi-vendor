@@ -95,3 +95,4 @@ Route::resource('/category', CategoryController::class);
 
 Route::get("products", [ProductController::class, "getAllProducts"]);
 Route::get("products/{id}", [ProductController::class, "getSingleProductById"]);
+Route::get("productsPages", [ProductController::class, "getProductsPerPage"]);

@@ -16,9 +16,10 @@ class RatingsSeeder extends Seeder
 
         for ($i = 1; $i <= $numberOfRecords; $i++) {
             \DB::table('ratings')->insert([
-                'product_id' => 27, // Adjust the range based on your actual data
+                'product_id' => 27,
                 'rate' => rand(1, 5),
                 'review' => "This is review $i for the product.",
+                'user_id' => 1
             ]);
         }
     }

@@ -18,13 +18,14 @@ class ProductFactory extends Factory
     {
         return [
 
-            'vendor_id' => 4,
+            'vendor_id' => 1,
             'product_name' => $this->faker->name(),
             'price' => $this->faker->numberBetween(10, 1000),
             'discount' => 0,
             'stock' => $this->faker->numberBetween(10, 20),
             'is_on_sale' => 0,
             'category_id' => $this->faker->numberBetween(1, 2),
+            'descreption' => $this->faker->text(200)
 
         ];
     }
