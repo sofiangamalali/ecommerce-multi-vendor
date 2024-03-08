@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Database\Factories\ProductFactory;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
@@ -47,5 +49,9 @@ class Product extends Model
     public function rating()
     {
         return $this->hasMany(Rating::class, 'product_id');
+    }
+    protected static function newFactory(): Factory
+    {
+        return ProductFactory::new();
     }
 }
