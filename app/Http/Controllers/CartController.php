@@ -38,11 +38,11 @@ class CartController extends Controller
                     'stock number' => $dbProduct->stock
                 ]);
             }
+            $totalPrice += $dbProduct->price * $product['quantity'];
             if ($dbProduct['discount']) {
-                $totalPrice += ($dbProduct->price * $product['quantity']) * $dbProduct['discount'];
-            } else {
-                $totalPrice += $dbProduct->price * $product['quantity'];
+                $totalPrice -= ($dbProduct->price * $product['quantity']) * $dbProduct['discount'];
             }
+
 
         }
         $cart->update([
@@ -129,7 +129,11 @@ class CartController extends Controller
                 $userCart->products()->detach($productId);
 
                 $totalPrice -= $removedPrice;
-                
+                $products = $userCart->products->all();
+                if (count($products) === 0) {
+                    $totalPrice = 0;
+                }
+
             }
 
             $cart->update(['total_price' => $totalPrice]);
