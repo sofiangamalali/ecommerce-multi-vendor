@@ -108,9 +108,7 @@ class VendorController extends Controller
             'phone_number' => 'unique:vendors,phone_number|max:11|min:11',
             'logo_pic' => 'file|image|mimes:jpeg,png,jpg,gif',
         ]);
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 400);
-        }
+
         $vendor = auth('vendor')->user();
         $vendor->update([
             'fname' => $request->input('fname') ?? $vendor->fname,
@@ -140,18 +138,19 @@ class VendorController extends Controller
                     'numberOfProducts' => $vendor->products()->count(),
                     'plan' => Plan::find($vendor->plan_id)->name,
                     'business_name' => $vendor->business_name,
-                    'accountStatus'=>$vendor->is_active?'Verified':'Suspended',
+                    'accountStatus' => $vendor->is_active ? 'Verified' : 'Suspended',
                 ]
             ],
             200
         );
     }
-    public function getVendorData(){
+    public function getVendorData()
+    {
         $vendor = auth('vendor')->user();
 
-        $vendorData= Vendor::find($vendor->id);
+        $vendorData = Vendor::find($vendor->id);
 
-        return response()->json(['data' => $vendorData],200);
+        return response()->json(['data' => $vendorData], 200);
 
     }
 

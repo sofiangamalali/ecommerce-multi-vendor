@@ -34,7 +34,7 @@ Route::group(["prefix" => "user"], function () {
 
 
     //Get payment methods
-    Route::get('payments' , [PaymentController::class ,'getAllPayment']);
+    Route::get('payments', [PaymentController::class, 'getAllPayment']);
 
 
     // card routes
@@ -59,10 +59,10 @@ Route::group(["prefix" => "admin"], function () {
 
 
     //PaymentMethods
-    Route::get('payments' , [PaymentController::class ,'getAllPayment'])->middleware('auth:admin');
-    Route::post('payment/create' , [PaymentController::class ,'createPayment'])->middleware('auth:admin');
-    Route::patch('payment/update/{id}' , [PaymentController::class ,'updatePayment'])->middleware('auth:admin');
-    Route::delete('payment/delete/{id}' , [PaymentController::class ,'deletePayment'])->middleware('auth:admin');
+    Route::get('payments', [PaymentController::class, 'getAllPayment'])->middleware('auth:admin');
+    Route::post('payment/create', [PaymentController::class, 'createPayment'])->middleware('auth:admin');
+    Route::patch('payment/update/{id}', [PaymentController::class, 'updatePayment'])->middleware('auth:admin');
+    Route::delete('payment/delete/{id}', [PaymentController::class, 'deletePayment'])->middleware('auth:admin');
 
     //PromoCode
     Route::get('promocodes', [PromoCodeController::class, 'getPromoCodes'])->middleware('auth:admin');
@@ -85,8 +85,10 @@ Route::controller(VendorController::class)
     ->group(function () {
         Route::post("login", "loginVendor");
         Route::post("register", "registerVendor");
-        Route::get("get-data" ,'getAllData');
-        Route::get("get-vendor-data" ,'getVendorData');
+        Route::get("get-data", 'getAllData');
+        Route::get("get-vendor-data", 'getVendorData');
+        Route::post("update-vendor-data", "updateVendorData");
+
     });
 
 // product Routes
@@ -100,13 +102,6 @@ Route::controller(ProductController::class)
         Route::post("products", "createProduct");
         Route::delete("/products/{id}", "deleteProduct");
         Route::post("update-vendor-data", "updateVendorData");
-
-
-        Route::get('/search', [SearchController::class, 'search']);
-        Route::post("update-vendor-data", "updateVendorData");
-
-
-
 
     });
 
