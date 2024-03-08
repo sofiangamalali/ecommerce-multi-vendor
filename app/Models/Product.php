@@ -33,7 +33,10 @@ class Product extends Model
         'created_at',
         'updated_at',
     ];
-
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
     public function images()
     {
         return $this->hasMany(Product_image::class);
@@ -55,6 +58,10 @@ class Product extends Model
     public function rating()
     {
         return $this->hasMany(Rating::class, 'product_id');
+    }
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
     }
     protected static function newFactory(): Factory
     {

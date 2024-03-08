@@ -11,6 +11,7 @@ use App\Http\Controllers\api\AdminController;
 use App\Http\Controllers\api\VendorController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\WishListController;
 use App\Http\Controllers\api\RatingController;
 use GuzzleHttp\Middleware;
 use Illuminate\Http\Request;
@@ -23,8 +24,17 @@ Route::group(["prefix" => "user"], function () {
     Route::post("register", [UserController::class, "registerUser"]);
     Route::resource('/cart', CartController::class)->middleware('auth:user');
     Route::resource('/rating', RatingController::class)->middleware('auth:user');
+    //wishList
+    Route::get('getwishlist' , [WishListController::class , 'getUserWishlist'])->middleware('auth:user');
+    Route::post('wishlist/add' , [WishListController::class , 'addProductToWishlist'])->middleware('auth:user');
+    Route::delete('wishlist/delete' , [WishListController::class , 'deleteProductFromWishlist'])->middleware('auth:user');
+    // write users routes   
 
-    // write users routes
+
+
+
+
+
     // card routes
     Route::get("card/{id}", [CardController::class, "getCard"]);
     Route::get("card", [CardController::class, "getAllCards"]);
@@ -61,10 +71,9 @@ Route::group(["prefix" => "admin"], function () {
 Route::controller(VendorController::class)
     ->prefix("vendor")
     ->group(function () {
-        // Route::post("login", [VendorController::class, "loginVendor"]);
-        // Route::post("register", [VendorController::class, "registerVendor"]);
         Route::post("login", "loginVendor");
         Route::post("register", "registerVendor");
+        Route::get("get-data" ,'getAllData');
 
     });
 
@@ -82,9 +91,8 @@ Route::controller(ProductController::class)
 
 
         Route::get('/search', [SearchController::class, 'search']);
-
-
         Route::post("update-vendor-data", "updateVendorData");
+       
 
 
 
