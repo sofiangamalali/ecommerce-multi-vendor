@@ -19,6 +19,13 @@ class UserController extends Controller
         $this->middleware('auth:user', ['except' => ['loginUser', 'registerUser']]);
 
     }
+
+    /**
+     * Log in a user.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function loginUser(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -39,6 +46,13 @@ class UserController extends Controller
         return response()->json(['error' => 'Invalid credentials'], 401);
 
     }
+
+    /**
+     * Register a new user.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function registerUser(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -70,6 +84,12 @@ class UserController extends Controller
         return response()->json(['message' => "success", 'user' => $user], 200);
     }
 
+    /**
+     * Display the specified user.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function showUser($id)
     {
         $user = User::find($id);
@@ -81,6 +101,13 @@ class UserController extends Controller
         return response()->json(['user' => $user], 200);
     }
 
+    /**
+     * Update the specified user in storage.
+     *
+     * @param  Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function updateUser(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
@@ -108,6 +135,12 @@ class UserController extends Controller
         return response()->json(['message' => 'User updated successfully', 'user' => $user], 200);
     }
 
+    /**
+     * Remove the specified user from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function deleteUser($id)
     {
         $user = User::find($id);

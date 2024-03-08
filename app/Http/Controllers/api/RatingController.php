@@ -24,12 +24,15 @@ class RatingController extends Controller
     public function store(Request $request)
     {
         $user = auth('user')->user();
+        if (!$user)
+            return response()->json(['message' => 'Invalid token'], 404);
+
         $validatedData = $request->validate([
             'rate' => 'required|numeric|between:0,5'
         ]);
         $rating = new Rating();
         $rating->user_id = $user->id;
-        $rating->product_id = $request->productId;
+        $rating->product_id = $request->product_id;
         $rating->rate = $validatedData['rate'];
         $rating->review = $request->review;
         $rating->save();
