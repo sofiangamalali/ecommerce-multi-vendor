@@ -204,8 +204,7 @@ class ProductController extends Controller
             "category_id" => $validatedData["category_id"],
             "descreption" => $validatedData['descreption'],
         ]);
-        // dd($product);x
-        // $product->image_path = $imagePath;
+
         try {
             $this->storeImage($request, $product->id);
         } catch (\Exception $e) {
@@ -246,6 +245,13 @@ class ProductController extends Controller
         return response()->json(['message' => 'Product deleted successfully']);
     }
 
+    /**
+     * Store product images for a specific product.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $id The ID of the product for which images are being stored
+     * @return void
+     */
     public function storeImage(Request $request, $id)
     {
         $vendor = auth("vendor")->user();
@@ -306,6 +312,12 @@ class ProductController extends Controller
         return response()->json(['products' => $products]);
     }
 
+    /**
+     * Get a specified number of randomly recommended products.
+     *
+     * @param int $number The number of recommended products to retrieve.
+     * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Builder[] Recommended products.
+     */
     public function getRecommendedProducts($number)
     {
         return Product::inRandomOrder()->take($number)->get();

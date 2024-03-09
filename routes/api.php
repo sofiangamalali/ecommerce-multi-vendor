@@ -30,7 +30,7 @@ Route::group(["prefix" => "user"], function () {
     Route::get('orders', [UserController::class, 'getUserOrders']);
     Route::post('order/cancel/{id}', [UserController::class, 'cancelOrder']);
 
-    //cart 
+    //cart
     Route::resource('cart', CartController::class)->middleware('auth:user');
 
     //rating
@@ -40,9 +40,9 @@ Route::group(["prefix" => "user"], function () {
     Route::get('getwishlist', [WishListController::class, 'getUserWishlist'])->middleware('auth:user');
     Route::post('wishlist/add', [WishListController::class, 'addProductToWishlist'])->middleware('auth:user');
     Route::delete('wishlist/delete', [WishListController::class, 'deleteProductFromWishlist'])->middleware('auth:user');
-    
+
     // write users routes
-    
+
 });
 
 // Admin Routes
@@ -66,11 +66,11 @@ Route::group(["prefix" => "admin"], function () {
     Route::post('promocode/update/{id}', [PromoCodeController::class, 'updatePromoCode'])->middleware('auth:admin');
 
 
-    //Vendor    
+    //Vendor
     Route::post('activate-vendor/{id}', [AdminController::class, 'activateVendor']);
     Route::post('suspend-vendor/{id}', [AdminController::class, 'suspendVendor']);
-    Route::get('get-all-vendors' , [AdminController::class , "getAllvendors"]);
-    
+    Route::get('get-all-vendors', [AdminController::class, "getAllvendors"]);
+
 
 
     // Categoreis
@@ -98,6 +98,7 @@ Route::controller(ProductController::class)
         Route::delete("/products/{id}", "deleteProduct");
 
     });
+
 //Search
 Route::get('search', [SearchController::class, 'search']);
 

@@ -153,17 +153,37 @@ class UserController extends Controller
 
         return response()->json(['message' => 'User deleted successfully'], 200);
     }
+
+    /**
+     * Get the orders associated with the authenticated user.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getUserOrders()
     {
+        // Retrieve the authenticated user
         $user = auth('user')->user();
+
+        // Get the user's orders
         $orders = $user->orders()->get();
+
+        // Return a JSON response with the user's orders
         return response()->json(['data' => $orders], 200);
     }
+
+    /**
+     * Cancel a specific order for the authenticated user.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $id The ID of the order to be canceled
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function cancelOrder(Request $request, $id)
     {
         $user = auth('user')->user();
         $order = $user->orders()->find($id);
-   
+
+        // Check if the order is already canceled
         if (!$order) {
             return response()->json(['message' => 'Order Not found'], 400);
         }

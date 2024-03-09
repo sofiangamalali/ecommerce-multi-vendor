@@ -11,6 +11,9 @@ class CartController extends Controller
 {
     /**
      * Display a listing of the resource.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection|\App\Http\resources\CartResource
      */
     public function index(Request $request)
     {
@@ -20,10 +23,16 @@ class CartController extends Controller
             $user = $request->user();
             return new CartResource($user->cart);
         }
+        return response()->json(['message' => 'error accessing data']);
 
     }
 
-
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function store(Request $request)
     {
         $cart = Cart::where("user_id", $request->user()->id)->first();
@@ -58,13 +67,13 @@ class CartController extends Controller
         ;
     }
 
-    /**
-     * Display the specified resource.
-     */
- 
+
 
     /**
      * Update the specified resource in storage.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(Request $request)
     {
@@ -95,8 +104,13 @@ class CartController extends Controller
         return response()->json(['message' => 'Cart updated successfully', 'data' => new CartResource($cart)]);
 
     }
+
     /**
      * Remove the specified resource from storage.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Cart $cart
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(Request $request, Cart $cart)
     {
@@ -132,5 +146,7 @@ class CartController extends Controller
             return response()->json(['message' => 'Item removed successfully', 'data' => new CartResource($cart)]);
 
         }
+        // Ensure that there's a default return statement if neither condition is met
+        return response()->json(['message' => 'Unexpected condition occurred'], 500);
     }
 }
