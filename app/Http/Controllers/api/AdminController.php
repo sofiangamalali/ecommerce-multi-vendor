@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
-use App\Mail\{VendorActivationMail , VendorSuspendMail};
+use App\Mail\{VendorActivationMail, VendorSuspendMail};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Validator;
-use App\Models\{Admin, Vendor , User ,Category ,Order , Transaction ,Product ,Plan ,PromoCode ,Rating};
+use App\Models\{Admin, Vendor, User, Category, Order, Transaction, Product, Plan, PromoCode, Rating};
 
 
 class AdminController extends Controller
@@ -17,7 +17,7 @@ class AdminController extends Controller
     {
         $this->middleware('auth:admin', ['except' => ['loginAdmin', 'registerAdmin']]);
 
-     
+
 
 
     }
@@ -195,7 +195,8 @@ class AdminController extends Controller
         Mail::to($vendor->email)->send(new VendorSuspendMail(['fname' => $vendor->fname, 'lname' => $vendor->lname]));
         return response()->json(['message' => 'Vendor suspended'], 200);
     }
-    public function getAllData(){
+    public function getAllData()
+    {
         $vendorsCount = Vendor::count();
         $usersCount = User::count();
         $categoriesCount = Category::count();
@@ -205,15 +206,20 @@ class AdminController extends Controller
         $transcationsCount = Transaction::count();
         $promoCodesCount = PromoCode::count();
         return response()->json([
-            'numberOfVendors'=> $vendorsCount,
-            'numberOfUsers'=>  $usersCount,
-            'numberOfCategories'=> $categoriesCount,
-            'numberOfProducts'=> $productsCount,
-            'numberOfOrders'=> $ordersCount,
-            'numberOfPlans'=> $plansCount,
-            'numberOfTranscations'=> $transcationsCount,
-            'numberOfPromoCodes'=> $promoCodesCount,
-        ],200);
+            'numberOfVendors' => $vendorsCount,
+            'numberOfUsers' => $usersCount,
+            'numberOfCategories' => $categoriesCount,
+            'numberOfProducts' => $productsCount,
+            'numberOfOrders' => $ordersCount,
+            'numberOfPlans' => $plansCount,
+            'numberOfTranscations' => $transcationsCount,
+            'numberOfPromoCodes' => $promoCodesCount,
+        ], 200);
     }
-    
+    public function getAllvendors()
+    {
+        $vendors = Vendor::get();
+        return response()->json(['data' => $vendors], 200);
+    }
+
 }

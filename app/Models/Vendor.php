@@ -12,7 +12,7 @@ use Illuminate\Auth\Authenticatable as AuthenticatableTrait;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 
-class Vendor extends Model implements Authenticatable, JWTSubject
+class   Vendor extends Model implements Authenticatable, JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable, AuthenticatableTrait;
     protected $table = 'vendors';

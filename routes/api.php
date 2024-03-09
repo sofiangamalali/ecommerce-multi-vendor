@@ -69,10 +69,11 @@ Route::group(["prefix" => "admin"], function () {
     //Vendor    
     Route::post('activate-vendor/{id}', [AdminController::class, 'activateVendor']);
     Route::post('suspend-vendor/{id}', [AdminController::class, 'suspendVendor']);
+    Route::get('get-all-vendors' , [AdminController::class , "getAllvendors"]);
+    
 
 
-
-    // write admin routes
+    // Categoreis
 });
 
 Route::controller(VendorController::class)
@@ -97,12 +98,15 @@ Route::controller(ProductController::class)
         Route::delete("/products/{id}", "deleteProduct");
 
     });
+//Search
+Route::get('search', [SearchController::class, 'search']);
 
-Route::get('/search', [SearchController::class, 'search']);
-Route::resource('/category', CategoryController::class);
-
+//Products
 Route::get("products", [ProductController::class, "getAllProducts"]);
 Route::get("products/{id}", [ProductController::class, "getSingleProductById"]);
 Route::get("productsPages", [ProductController::class, "getProductsPerPage"]);
+
 //Get payment methods
 Route::get('payments', [PaymentController::class, 'getAllPayment']);
+//Get Gategories
+Route::get('categories', [CategoryController::class, 'index']);
