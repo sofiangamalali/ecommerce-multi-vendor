@@ -34,7 +34,7 @@ Route::group(["prefix" => "user"], function () {
     Route::resource('cart', CartController::class)->middleware('auth:user');
 
     //rating
-    Route::resource('rating', RatingController::class)->middleware('auth:user');
+    Route::post('rating/create', [RatingController::class, 'store'])->middleware('auth:user');
 
     //wishList
     Route::get('getwishlist', [WishListController::class, 'getUserWishlist'])->middleware('auth:user');
@@ -42,7 +42,7 @@ Route::group(["prefix" => "user"], function () {
     Route::delete('wishlist/delete', [WishListController::class, 'deleteProductFromWishlist'])->middleware('auth:user');
     
     // write users routes
-    Route::post('ratings', [RatingController::class, 'store'])->middleware('auth:user');
+    
 });
 
 // Admin Routes
@@ -66,7 +66,7 @@ Route::group(["prefix" => "admin"], function () {
     Route::post('promocode/update/{id}', [PromoCodeController::class, 'updatePromoCode'])->middleware('auth:admin');
 
 
-    //Vendor
+    //Vendor    
     Route::post('activate-vendor/{id}', [AdminController::class, 'activateVendor']);
     Route::post('suspend-vendor/{id}', [AdminController::class, 'suspendVendor']);
 

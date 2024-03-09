@@ -61,15 +61,7 @@ class CartController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Cart $cart)
-    {
-        if (auth()->user()->getTable() == 'admins') {
-            return new CartResource($cart);
-        } else
-            return [
-                "message" => "Unauthorized user"
-            ];
-    }
+ 
 
     /**
      * Update the specified resource in storage.
