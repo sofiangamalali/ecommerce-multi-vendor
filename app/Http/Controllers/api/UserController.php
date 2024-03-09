@@ -195,4 +195,33 @@ class UserController extends Controller
         ]);
         return response()->json(['message' => 'success']);
     }
+
+    /**
+     * Change the password for the authenticated user.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function changePassword(Request $request)
+    {
+        // Retrieve the currently authenticated user
+        $user = auth('user')->user();
+
+        // Get the old and new passwords from the request
+        $oldPassword = $request->input('oldPassword');
+        $newPassword = $request->input('newPassword');
+
+        // Hash the provided old password and compare it with the stored hashed password
+        if (!\Hash::check($oldPassword, $user->password)) {
+            // If the old password doesn't match, return an error response
+            return response()->json(['message' => 'Invalid password'], 400);
+        }
+
+        // Update the user's password with the new hashed password
+        $user->update([
+            'password' => \Hash::make($newPassword)
+        ]);
+
+        return response()->json(['message' => 'Password Updated'], 200);
+    }
 }

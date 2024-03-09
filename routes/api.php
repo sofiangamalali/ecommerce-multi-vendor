@@ -24,6 +24,7 @@ Route::group(["prefix" => "user"], function () {
     //user
     Route::post("login", [UserController::class, "loginUser"]);
     Route::post("register", [UserController::class, "registerUser"]);
+    Route::post("changePassword", [UserController::class, "changePassword"]);
     Route::get('get-data', [UserController::class, 'showUser']);
 
     //order
@@ -106,7 +107,6 @@ Route::get('search', [SearchController::class, 'search']);
 Route::get("products", [ProductController::class, "getAllProducts"]);
 Route::get("products/{id}", [ProductController::class, "getSingleProductById"]);
 Route::get("productsPages", [ProductController::class, "getProductsPerPage"]);
-
 //Get payment methods
 Route::get('payments', [PaymentController::class, 'getAllPayment']);
 //Get Gategories
