@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api;
 use App\Http\Controllers\Controller;
 use App\Models\{Vendor};
 use App\Models\Plan;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Validator;
@@ -133,6 +134,18 @@ class VendorController extends Controller
     public function getAllData()
     {
         $vendor = auth('vendor')->user();
+        $products = $vendor->products->all();
+        $ratings = [];
+        $ratingsCount = 0;
+
+        foreach ($products as $product) {
+            $DBproduct = Product::find($product->id);
+            $DBratings = $DBproduct->rating->all();
+            if (count($DBratings) > 0)
+                $ratings[$product->id] = $DBratings;
+            $ratingsCount += $DBproduct->getRatingCount();
+        }
+
         return response()->json(
             [
                 "message" => "success",
@@ -140,7 +153,9 @@ class VendorController extends Controller
                     'numberOfProducts' => $vendor->products()->count(),
                     'plan' => Plan::find($vendor->plan_id)->name,
                     'business_name' => $vendor->business_name,
-                    'accountStatus'=>$vendor->is_active?'Verified':'Suspended',
+                    'accountStatus' => $vendor->is_active ? 'Verified' : 'Suspended',
+                    'ratings' => $ratings,
+                    'ratingsCount' => $ratingsCount,
                 ]
             ],
             200
@@ -154,5 +169,24 @@ class VendorController extends Controller
         return response()->json(['data' => $vendorData],200);
         
     }
+
+    public function getProductRatings($productId)
+    {
+        $product = Product::find($productId);
+
+        if (!$product) {
+            // Handle the case where the product is not found
+            return response()->json(['error' => 'Product not found'], 404);
+        }
+
+        $ratings = [
+            'ratings' => $product->ratings,
+            'ratingsCount' => $product->accurateRatingCount,
+        ];
+
+        return response()->json($ratings);
+    }
+
+  
 
 }

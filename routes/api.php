@@ -21,34 +21,28 @@ use Illuminate\Support\Facades\Route;
 
 // User Routes
 Route::group(["prefix" => "user"], function () {
+    //user
     Route::post("login", [UserController::class, "loginUser"]);
     Route::post("register", [UserController::class, "registerUser"]);
-    Route::resource('/cart', CartController::class)->middleware('auth:user');
-    Route::resource('/rating', RatingController::class)->middleware('auth:user');
-    
+    Route::get('get-data', [UserController::class, 'showUser']);
+
+    //order
+    Route::get('orders', [UserController::class, 'getUserOrders']);
+    Route::post('order/cancel/{id}', [UserController::class, 'cancelOrder']);
+
+    //cart 
+    Route::resource('cart', CartController::class)->middleware('auth:user');
+
+    //rating
+    Route::resource('rating', RatingController::class)->middleware('auth:user');
+
     //wishList
     Route::get('getwishlist', [WishListController::class, 'getUserWishlist'])->middleware('auth:user');
     Route::post('wishlist/add', [WishListController::class, 'addProductToWishlist'])->middleware('auth:user');
     Route::delete('wishlist/delete', [WishListController::class, 'deleteProductFromWishlist'])->middleware('auth:user');
+    
     // write users routes
     Route::post('ratings', [RatingController::class, 'store'])->middleware('auth:user');
-
-
-    //Get payment methods
-    Route::get('payments', [PaymentController::class, 'getAllPayment']);
-
-
-    // card routes
-    Route::get("card/{id}", [CardController::class, "getCard"]);
-    Route::get("card", [CardController::class, "getAllCards"]);
-    Route::post("addCard", [CardController::class, "addCard"]);
-    Route::delete("removeCard/{id}", [CardController::class, "removeCard"]);
-    Route::patch("updateCard/{id}", [CardController::class, "updateCard"]);
-
-    Route::post("order", [OrderController::class, "create"]);
-    Route::get("order", [OrderController::class, "show"]);
-    Route::patch("order", [OrderController::class, "update"]);
-    Route::delete("order", [OrderController::class, "destroy"]);
 });
 
 // Admin Routes
@@ -86,8 +80,8 @@ Route::controller(VendorController::class)
     ->group(function () {
         Route::post("login", "loginVendor");
         Route::post("register", "registerVendor");
-        Route::get("get-data" ,'getAllData');
-        Route::get("get-vendor-data" ,'getVendorData');
+        Route::get("get-data", 'getAllData');
+        Route::get("get-vendor-data", 'getVendorData');
         Route::post("update-vendor-data", "updateVendorData");
     });
 
@@ -101,7 +95,7 @@ Route::controller(ProductController::class)
         Route::patch("products/{id}", "updateProduct");
         Route::post("products", "createProduct");
         Route::delete("/products/{id}", "deleteProduct");
-       
+
     });
 
 Route::get('/search', [SearchController::class, 'search']);
@@ -110,3 +104,5 @@ Route::resource('/category', CategoryController::class);
 Route::get("products", [ProductController::class, "getAllProducts"]);
 Route::get("products/{id}", [ProductController::class, "getSingleProductById"]);
 Route::get("productsPages", [ProductController::class, "getProductsPerPage"]);
+//Get payment methods
+Route::get('payments', [PaymentController::class, 'getAllPayment']);

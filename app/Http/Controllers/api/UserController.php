@@ -90,9 +90,9 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function showUser($id)
+    public function showUser()
     {
-        $user = User::find($id);
+        $user = auth('user')->user();
 
         if (!$user) {
             return response()->json(['error' => 'User not found'], 404);
@@ -153,5 +153,26 @@ class UserController extends Controller
 
         return response()->json(['message' => 'User deleted successfully'], 200);
     }
-
+    public function getUserOrders()
+    {
+        $user = auth('user')->user();
+        $orders = $user->orders()->get();
+        return response()->json(['data' => $orders], 200);
+    }
+    public function cancelOrder(Request $request, $id)
+    {
+        $user = auth('user')->user();
+        $order = $user->orders()->find($id);
+   
+        if (!$order) {
+            return response()->json(['message' => 'Order Not found'], 400);
+        }
+        if ($order->status === 'canceld') {
+            return response()->json(['message' => 'The order is already canceld'], 400);
+        }
+        $order->update([
+            'status' => 'canceld'
+        ]);
+        return response()->json(['message' => 'success']);
+    }
 }
